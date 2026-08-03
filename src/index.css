@@ -1,0 +1,94 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Poppins", "Segoe UI", sans-serif;
+  --color-ink: #17151f;
+  --color-muted: #686573;
+  --color-line: #d9d8df;
+  --color-surface: #ffffff;
+  --color-panel: #eef4ff;
+  --color-panel-strong: #e5edff;
+  --color-brand: #5130d7;
+  --color-brand-dark: #3820a5;
+  --color-brand-soft: #eee9ff;
+  --color-success: #008f79;
+  --color-success-soft: #e6faf6;
+  --color-danger: #b54046;
+  --shadow-card: 0 8px 28px rgb(29 23 55 / 8%);
+  --shadow-dialog: 0 30px 80px rgb(21 18 37 / 22%);
+  --radius-card: 0.55rem;
+  --radius-panel: 0.7rem;
+  --breakpoint-desktop: 80rem;
+}
+
+:root {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: #ffffff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: #ffffff;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background: #ffffff;
+}
+
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+dialog::backdrop {
+  background: rgb(23 21 31 / 52%);
+  backdrop-filter: blur(3px);
+}
+
+::selection {
+  color: white;
+  background: var(--color-brand);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

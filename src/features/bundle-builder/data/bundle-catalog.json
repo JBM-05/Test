@@ -1,0 +1,366 @@
+{
+  "catalogVersion": 1,
+  "currency": "USD",
+  "steps": [
+    {
+      "id": "cameras",
+      "order": 1,
+      "eyebrow": "STEP 1 OF 4",
+      "title": "Choose your cameras",
+      "icon": "camera",
+      "nextLabel": "Next: Choose your plan"
+    },
+    {
+      "id": "plan",
+      "order": 2,
+      "eyebrow": "STEP 2 OF 4",
+      "title": "Choose your plan",
+      "icon": "plan",
+      "nextLabel": "Next: Choose your sensors"
+    },
+    {
+      "id": "sensors",
+      "order": 3,
+      "eyebrow": "STEP 3 OF 4",
+      "title": "Choose your sensors",
+      "icon": "sensor",
+      "nextLabel": "Next: Add extra protection"
+    },
+    {
+      "id": "accessories",
+      "order": 4,
+      "eyebrow": "STEP 4 OF 4",
+      "title": "Add extra protection",
+      "icon": "accessory",
+      "nextLabel": "Review your security system"
+    }
+  ],
+  "review": {
+    "description": "Review your personalized protection system designed to keep what matters most safe.",
+    "categories": [
+      { "id": "cameras", "label": "Cameras", "order": 1 },
+      { "id": "sensors", "label": "Sensors", "order": 2 },
+      { "id": "accessories", "label": "Accessories", "order": 3 },
+      { "id": "plan", "label": "Plan", "order": 4 }
+    ],
+    "shipping": {
+      "label": "Fast Shipping",
+      "priceCents": 0,
+      "compareAtCents": 599,
+      "freeLabel": "FREE"
+    },
+    "guarantee": {
+      "title": "30-day hassle-free returns",
+      "description": "Try your new security system risk-free with our satisfaction guarantee."
+    },
+    "financing": {
+      "description": "As low as $19/mo with affirm",
+      "learnMoreLabel": "Learn more"
+    }
+  },
+  "products": [
+    {
+      "kind": "variant",
+      "id": "cam-v4",
+      "stepId": "cameras",
+      "reviewCategory": "cameras",
+      "name": "Wyze Cam v4",
+      "description": "The clearest Wyze Cam ever made.",
+      "details": [
+        "Crystal-clear 2.5K QHD video",
+        "Color Night Vision",
+        "Indoor and outdoor weather resistance"
+      ],
+      "image": {
+        "src": "/assets/products/cam-v4.jpg",
+        "alt": "Wyze Cam v4",
+        "width": 480,
+        "height": 480
+      },
+      "badge": "Save 22%",
+      "billingCadence": "one-time",
+      "selection": { "mode": "quantity" },
+      "variants": [
+        {
+          "sku": "cam-v4-white",
+          "label": "White",
+          "swatch": "#F3F3F1",
+          "priceCents": 2798,
+          "compareAtCents": 3598
+        },
+        {
+          "sku": "cam-v4-grey",
+          "label": "Grey",
+          "swatch": "#797C7D",
+          "priceCents": 2798,
+          "compareAtCents": 3598
+        },
+        {
+          "sku": "cam-v4-black",
+          "label": "Black",
+          "swatch": "#222222",
+          "priceCents": 2798,
+          "compareAtCents": 3598
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "cam-pan-v3",
+      "stepId": "cameras",
+      "reviewCategory": "cameras",
+      "name": "Wyze Cam Pan v3",
+      "description": "360° pan and 180° tilt security camera.",
+      "details": [
+        "Remote 360° pan and 180° tilt",
+        "Automatic motion tracking",
+        "Indoor and outdoor weather resistance"
+      ],
+      "image": {
+        "src": "/assets/products/cam-pan-v3.webp",
+        "alt": "Wyze Cam Pan v3",
+        "width": 800,
+        "height": 800
+      },
+      "badge": "Save 17%",
+      "billingCadence": "one-time",
+      "selection": { "mode": "quantity" },
+      "variants": [
+        {
+          "sku": "cam-pan-v3-white",
+          "label": "White",
+          "swatch": "#F3F3F1",
+          "priceCents": 2399,
+          "compareAtCents": 2899
+        },
+        {
+          "sku": "cam-pan-v3-black",
+          "label": "Black",
+          "swatch": "#222222",
+          "priceCents": 2399,
+          "compareAtCents": 2899
+        }
+      ]
+    },
+    {
+      "kind": "variant",
+      "id": "floodlight-v2",
+      "stepId": "cameras",
+      "reviewCategory": "cameras",
+      "name": "Wyze Cam Floodlight v2",
+      "description": "2K floodlight camera with a 160° wide-angle view for your garage.",
+      "details": [
+        "2K video with Color Night Vision",
+        "2800-lumen adjustable floodlight",
+        "160° wide-angle field of view"
+      ],
+      "image": {
+        "src": "/assets/products/cam-floodlight-v2.jpg",
+        "alt": "Wyze Cam Floodlight v2",
+        "width": 480,
+        "height": 480
+      },
+      "badge": "Save 22%",
+      "billingCadence": "one-time",
+      "selection": { "mode": "quantity" },
+      "variants": [
+        {
+          "sku": "floodlight-v2-white",
+          "label": "White",
+          "swatch": "#F3F3F1",
+          "priceCents": 6998,
+          "compareAtCents": 8998
+        },
+        {
+          "sku": "floodlight-v2-black",
+          "label": "Black",
+          "swatch": "#222222",
+          "priceCents": 6998,
+          "compareAtCents": 8998
+        }
+      ]
+    },
+    {
+      "kind": "single",
+      "id": "duo-cam-doorbell",
+      "stepId": "cameras",
+      "reviewCategory": "cameras",
+      "name": "Wyze Duo Cam Doorbell",
+      "description": "Two cameras. Two views. Double the porch protection.",
+      "details": [
+        "Head-to-toe dual-camera coverage",
+        "Battery powered for flexible placement",
+        "Smart notifications and two-way audio"
+      ],
+      "image": {
+        "src": "/assets/products/duo-cam-doorbell.jpg",
+        "alt": "Wyze Duo Cam Doorbell",
+        "width": 480,
+        "height": 480
+      },
+      "billingCadence": "one-time",
+      "selection": { "mode": "quantity" },
+      "sku": "duo-cam-doorbell",
+      "priceCents": 6998
+    },
+    {
+      "kind": "variant",
+      "id": "battery-cam-pro",
+      "stepId": "cameras",
+      "reviewCategory": "cameras",
+      "name": "Wyze Battery Cam Pro",
+      "description": "Protect anywhere. See everything in 2.5K HDR. No power outlet or electrician needed.",
+      "details": [
+        "Wire-free 2.5K HDR video",
+        "Removable, rechargeable battery",
+        "Integrated spotlight and siren"
+      ],
+      "image": {
+        "src": "/assets/products/battery-cam-pro.jpg",
+        "alt": "Wyze Battery Cam Pro",
+        "width": 480,
+        "height": 480
+      },
+      "billingCadence": "one-time",
+      "selection": { "mode": "quantity" },
+      "variants": [
+        {
+          "sku": "battery-cam-pro-white",
+          "label": "White",
+          "swatch": "#F3F3F1",
+          "priceCents": 8998
+        },
+        {
+          "sku": "battery-cam-pro-black",
+          "label": "Black",
+          "swatch": "#222222",
+          "priceCents": 8998
+        }
+      ]
+    },
+    {
+      "kind": "single",
+      "id": "cam-unlimited",
+      "stepId": "plan",
+      "reviewCategory": "plan",
+      "name": "Cam Unlimited",
+      "description": "Unlock smart detections and cloud video history for all of your Wyze cameras.",
+      "details": [
+        "Coverage for every camera on your account",
+        "Smart AI event detections",
+        "Cloud video history"
+      ],
+      "image": {
+        "src": "/assets/products/cam-unlimited.jpg",
+        "alt": "Cam Unlimited plan",
+        "width": 480,
+        "height": 480
+      },
+      "badge": "Best value",
+      "billingCadence": "month",
+      "selection": { "mode": "binary" },
+      "sku": "cam-unlimited",
+      "priceCents": 999,
+      "compareAtCents": 1299
+    },
+    {
+      "kind": "single",
+      "id": "motion-sensor",
+      "stepId": "sensors",
+      "reviewCategory": "sensors",
+      "name": "Wyze Motion Sensor",
+      "description": "Know when motion is detected anywhere in your home.",
+      "details": [
+        "Compact, wire-free placement",
+        "Instant motion notifications",
+        "Requires Wyze Sense Hub"
+      ],
+      "image": {
+        "src": "/assets/products/motion-sensor.jpg",
+        "alt": "Wyze Motion Sensor",
+        "width": 480,
+        "height": 480
+      },
+      "billingCadence": "one-time",
+      "selection": { "mode": "quantity" },
+      "sku": "motion-sensor",
+      "priceCents": 2999
+    },
+    {
+      "kind": "single",
+      "id": "sense-hub",
+      "stepId": "sensors",
+      "reviewCategory": "sensors",
+      "name": "Wyze Sense Hub",
+      "description": "Connects and manages your Wyze sensors.",
+      "details": [
+        "Required for Wyze Motion Sensor",
+        "Automatically included with selected sensors",
+        "One hub supports your sensor system"
+      ],
+      "image": {
+        "src": "/assets/products/sense-hub.jpg",
+        "alt": "Wyze Sense Hub",
+        "width": 480,
+        "height": 480
+      },
+      "billingCadence": "one-time",
+      "selection": {
+        "mode": "required",
+        "triggerProductIds": ["motion-sensor"],
+        "quantity": 1
+      },
+      "sku": "sense-hub",
+      "priceCents": 0,
+      "compareAtCents": 2992
+    },
+    {
+      "kind": "single",
+      "id": "microsd-256gb",
+      "stepId": "accessories",
+      "reviewCategory": "accessories",
+      "name": "Wyze 256GB MicroSD Card",
+      "description": "Record continuously and store more video locally.",
+      "details": [
+        "256GB local storage",
+        "Designed for continuous camera recording",
+        "No cloud connection required for playback"
+      ],
+      "image": {
+        "src": "/assets/products/microsd.jpg",
+        "alt": "Wyze 256GB MicroSD Card",
+        "width": 480,
+        "height": 480
+      },
+      "billingCadence": "one-time",
+      "selection": { "mode": "quantity" },
+      "sku": "microsd-256gb",
+      "priceCents": 2098
+    }
+  ],
+  "seed": {
+    "openStepId": "cameras",
+    "activeVariantByProductId": {
+      "cam-v4": "cam-v4-white",
+      "cam-pan-v3": "cam-pan-v3-white",
+      "floodlight-v2": "floodlight-v2-white",
+      "battery-cam-pro": "battery-cam-pro-white"
+    },
+    "quantityBySku": {
+      "cam-v4-white": 1,
+      "cam-v4-grey": 0,
+      "cam-v4-black": 0,
+      "cam-pan-v3-white": 2,
+      "cam-pan-v3-black": 0,
+      "floodlight-v2-white": 0,
+      "floodlight-v2-black": 0,
+      "duo-cam-doorbell": 0,
+      "battery-cam-pro-white": 0,
+      "battery-cam-pro-black": 0,
+      "cam-unlimited": 1,
+      "motion-sensor": 2,
+      "sense-hub": 1,
+      "microsd-256gb": 2
+    }
+  }
+}
