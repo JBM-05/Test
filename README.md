@@ -110,7 +110,7 @@ The supplied Figma palette contains documented contrast exceptions for review ca
 
 The automated suite currently includes 27 Vitest unit/integration tests for catalog validation, reducer, selector, persistence, formatting, and React interaction behavior, plus 30 Playwright behavior/accessibility checks across desktop, wide-tablet, tablet, mobile, and narrow-mobile viewports. A separate deterministic visual suite compares the production build with immutable Figma exports at 1440x1077 and 390x1252 and requires zero non-antialiasing pixel differences.
 
-Gilroy and TT Norms Pro are commercial fonts and are not redistributed by this repository. Add licensed WOFF2 copies using the filenames documented in `public/assets/fonts/README.md`; `npm run fonts:verify` fails fast until they are present. This keeps the normal behavior suite runnable while preventing an approximate fallback font from being accepted by the exact visual gate.
+Gilroy and TT Norms Pro are commercial fonts and are not redistributed by this repository. Standard CI therefore runs the complete non-visual verification sequence. In a licensed local environment, add the WOFF2 copies using the filenames documented in `public/assets/fonts/README.md`, then run `npm run visual:verify`; the command fails fast when the licensed fonts are absent so an approximate fallback cannot be accepted by the exact visual gate.
 
 Coverage gates are enforced at 80% for statements, functions, and lines and 75% for branches. The latest verified run reports 85.52% statement coverage and 88.48% line coverage. A production Lighthouse audit scored 90 for Performance and 100 for Accessibility, Best Practices, and SEO; these scores describe that audited environment and are not treated as permanent guarantees.
 
