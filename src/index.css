@@ -1,29 +1,37 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Poppins", "Segoe UI", sans-serif;
-  --color-ink: #17151f;
-  --color-muted: #686573;
-  --color-line: #d9d8df;
+  --font-sans: "Gilroy", "Poppins", "Segoe UI", sans-serif;
+  --font-checkout: "TT Norms Pro", "Gilroy", "Poppins", "Segoe UI", sans-serif;
+  --color-ink: #0b0d10;
+  --color-copy: #1f1f1f;
+  --color-muted: #575757;
+  --color-line: #ced6de;
   --color-surface: #ffffff;
-  --color-panel: #eef4ff;
-  --color-panel-strong: #e5edff;
-  --color-brand: #5130d7;
-  --color-brand-dark: #3820a5;
-  --color-brand-soft: #eee9ff;
-  --color-success: #008f79;
+  --color-panel: #edf4ff;
+  --color-panel-strong: #edf4ff;
+  --color-brand: #4e2fd2;
+  --color-brand-dark: #4023b8;
+  --color-brand-soft: #f0f4f7;
+  --color-success: #0aa288;
   --color-success-soft: #e6faf6;
-  --color-danger: #b54046;
-  --shadow-card: 0 8px 28px rgb(29 23 55 / 8%);
+  --color-danger: #d8392b;
+  --color-gray-200: #f0f4f7;
+  --color-gray-300: #e6ebf0;
+  --color-gray-400: #ced6de;
+  --color-gray-500: #a8b2bd;
+  --color-gray-600: #6f7882;
+  --color-gray-700: #525963;
+  --shadow-card: none;
   --shadow-dialog: 0 30px 80px rgb(21 18 37 / 22%);
-  --radius-card: 0.55rem;
-  --radius-panel: 0.7rem;
+  --radius-card: 10px;
+  --radius-panel: 10px;
   --breakpoint-desktop: 80rem;
 }
 
 :root {
   font-family: var(--font-sans);
-  color: var(--color-ink);
+  color: var(--color-copy);
   background: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -66,6 +74,10 @@ button:disabled {
 img {
   display: block;
   max-width: 100%;
+}
+
+.font-checkout {
+  font-family: var(--font-checkout);
 }
 
 dialog::backdrop {

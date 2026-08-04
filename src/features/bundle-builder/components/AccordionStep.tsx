@@ -1,7 +1,7 @@
-import { ChevronDown, ChevronUp } from 'lucide-react'
 import type { ReactNode, Ref } from 'react'
 import { useRef } from 'react'
 
+import { bundleBuilderAssets } from './assets'
 import { gsap, useGSAP } from './motion'
 
 interface AccordionStepProps {
@@ -9,7 +9,7 @@ interface AccordionStepProps {
   stepNumber: number
   totalSteps: number
   title: string
-  icon: ReactNode
+  iconSrc: string
   selectedCount: number
   isOpen: boolean
   buttonRef?: Ref<HTMLButtonElement>
@@ -19,12 +19,38 @@ interface AccordionStepProps {
   children: ReactNode
 }
 
+const STEP_ICON_CLASS: Readonly<Record<string, string>> = {
+  cameras: 'size-5 xl:size-[26px]',
+  plan: 'h-[25px] w-6 xl:h-[27px] xl:w-[26px]',
+  sensors: 'size-5 xl:size-[26px]',
+  accessories: 'h-5 w-5 xl:h-5 xl:w-[26px]',
+}
+
+const STEP_ICON_IMAGE_CLASS: Readonly<Record<string, string>> = {
+  sensors: 'h-[21.55px] w-[21.55px] max-w-none xl:size-[26px]',
+  accessories: 'h-[21.5px] w-[19.4704px] max-w-none xl:h-5 xl:w-[17.9704px]',
+}
+
+const STEP_ROW_CLASS: Readonly<Record<string, string>> = {
+  cameras: 'h-[60px]',
+  plan: 'h-[65px]',
+  sensors: 'h-[60px]',
+  accessories: 'h-[60px]',
+}
+
+const DESKTOP_COLLAPSED_STEP_ROW_CLASS: Readonly<Record<string, string>> = {
+  cameras: 'xl:h-[66px]',
+  plan: 'xl:h-[67px]',
+  sensors: 'xl:h-[66px]',
+  accessories: 'xl:h-[66px]',
+}
+
 export function AccordionStep({
   stepId,
   stepNumber,
   totalSteps,
   title,
-  icon,
+  iconSrc,
   selectedCount,
   isOpen,
   buttonRef,
@@ -65,50 +91,94 @@ export function AccordionStep({
   )
 
   const selectionLabel = `${selectedCount} selected`
+  const mobileCollapsedCaret = stepNumber % 2 === 0 ? 'up' : 'down'
+  const caretDirection = isOpen ? 'up' : mobileCollapsedCaret
+  const mobileCaretDown = caretDirection === 'down'
+  const desktopCaretDown = !isOpen
+  const caretRotation = mobileCaretDown
+    ? desktopCaretDown
+      ? 'rotate-180'
+      : 'rotate-180 xl:rotate-0'
+    : desktopCaretDown
+      ? 'rotate-0 xl:rotate-180'
+      : 'rotate-0'
 
   return (
     <section
       ref={rootRef}
       className={[
-        'overflow-hidden rounded-none border border-x-0 border-[#d9dce4] shadow-none transition-colors sm:rounded-xl sm:border-x sm:shadow-[0_3px_14px_rgba(32,25,41,0.03)] xl:rounded-md',
-        isOpen ? 'bg-[#eef4ff]' : 'bg-white',
+        'flex min-w-0 w-full flex-col gap-[5px]',
+        stepNumber === 1 ? '' : 'pt-[5px] sm:pt-0',
+        isOpen
+          ? 'overflow-hidden bg-panel xl:rounded-[10px] xl:pt-[15px]'
+          : 'overflow-visible bg-white',
       ].join(' ')}
+      data-step-number={stepNumber}
     >
+      <div
+        className={[
+          'flex h-[10px] w-full items-center px-[15px]',
+          isOpen ? 'xl:h-3' : 'xl:h-[10px]',
+        ].join(' ')}
+      >
+        <span
+          className={[
+            'text-[10px] font-medium uppercase leading-none tracking-[1.6px] text-[#484848]',
+            isOpen ? 'xl:text-xs' : 'xl:text-[10px]',
+          ].join(' ')}
+        >
+          Step {stepNumber} of {totalSteps}
+        </span>
+      </div>
+
       <h2 id={headerId}>
         <button
           ref={buttonRef}
           type="button"
-          className="flex min-h-12 w-full items-center gap-2 rounded-none px-3 py-2 text-left transition-colors hover:bg-white/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#5130d7] sm:gap-3 sm:rounded-xl sm:px-5 sm:py-3 xl:rounded-md xl:px-3 xl:py-3"
+          className={[
+            'flex w-full items-center justify-between border-y-[0.5px] border-[rgba(31,31,31,0.5)] px-[15px] py-0 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand',
+            STEP_ROW_CLASS[stepId] ?? 'h-[60px]',
+            isOpen
+              ? 'xl:h-[46px] xl:border-b-0 xl:pb-0 xl:pt-5'
+              : `${DESKTOP_COLLAPSED_STEP_ROW_CLASS[stepId] ?? 'xl:h-[66px]'} xl:relative xl:border-b-0 xl:border-t-[0.5px] xl:py-5 xl:after:absolute xl:after:inset-x-0 xl:after:-bottom-px xl:after:h-0.5 xl:after:border-b xl:after:border-[#acacac] xl:after:bg-[#e3e3e3] xl:after:content-['']`,
+          ].join(' ')}
           onClick={onToggle}
           aria-expanded={isOpen}
           aria-controls={panelId}
           aria-label={`Step ${stepNumber}: ${title}`}
         >
-          <span className="flex size-7 shrink-0 items-center justify-center text-[#625b68]">
-            {icon}
-          </span>
-          <span className="min-w-0 flex-1">
-            <span className="block text-[8px] font-bold uppercase tracking-[0.13em] text-[#625b68] sm:text-[9px]">
-              Step {stepNumber} of {totalSteps}
+          <span className="flex min-w-0 flex-1 items-center gap-2">
+            <span
+              className={`flex shrink-0 items-center justify-center ${STEP_ICON_CLASS[stepId] ?? 'size-5 xl:size-[26px]'}`}
+              aria-hidden="true"
+            >
+              <img
+                className={STEP_ICON_IMAGE_CLASS[stepId] ?? 'size-full object-contain'}
+                src={iconSrc}
+                alt=""
+              />
             </span>
-            <span className="mt-0.5 block text-sm font-bold tracking-[-0.01em] text-[#211e25] sm:text-base xl:text-sm">
+            <span className="min-w-0 text-[18px] font-semibold leading-none text-ink xl:text-[22px]">
               {title}
             </span>
           </span>
-          <span className="flex shrink-0 items-center gap-2">
+
+          <span className="ml-3 flex shrink-0 items-center gap-1">
             <span
               className={[
-                'hidden text-[10px] font-bold text-[#5630c4] min-[340px]:inline sm:text-xs',
+                'text-center text-sm font-medium leading-4 text-brand',
                 isOpen ? '' : 'xl:hidden',
               ].join(' ')}
             >
               {selectionLabel}
             </span>
-            {isOpen ? (
-              <ChevronUp aria-hidden="true" size={16} />
-            ) : (
-              <ChevronDown aria-hidden="true" size={16} />
-            )}
+            <span className="flex size-3 items-center justify-center" aria-hidden="true">
+              <img
+                className={`h-[6.63977px] w-[9.05857px] max-w-none object-contain ${caretRotation}`}
+                src={bundleBuilderAssets.carets.up}
+                alt=""
+              />
+            </span>
           </span>
         </button>
       </h2>
@@ -120,16 +190,16 @@ export function AccordionStep({
         aria-labelledby={headerId}
         aria-hidden={!isOpen}
         inert={!isOpen}
-        className={isOpen ? 'overflow-hidden' : 'pointer-events-none overflow-hidden'}
+        className={isOpen ? '-mt-[5px] overflow-hidden' : 'pointer-events-none -mt-[5px] overflow-hidden'}
         style={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
       >
-        <div className="border-t border-[#d9dfeb] px-4 pb-5 pt-5 sm:px-5 sm:pb-5 sm:pt-5 xl:px-3 xl:pb-4 xl:pt-3">
+        <div className="px-[15px] pb-5 pt-[15px]">
           {children}
           {onNext && nextLabel ? (
-            <div className="mt-6 flex justify-center pt-5 xl:mt-4 xl:pt-2">
+            <div className="mt-[15px] flex justify-center">
               <button
                 type="button"
-                className="inline-flex min-h-12 w-full items-center justify-center rounded-md border border-[#6436e8] bg-white px-7 text-sm font-bold text-[#5630c4] transition-[background-color,transform] hover:bg-[#f4efff] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5130d7] focus-visible:ring-offset-2 active:scale-[0.99] sm:w-auto xl:min-h-10 xl:text-xs"
+                className="inline-flex min-h-12 w-full items-center justify-center rounded-[7px] border border-brand bg-[#f4f8ff] px-6 text-sm font-semibold text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 sm:w-auto xl:h-[39px] xl:min-h-[39px] xl:text-[18px] xl:leading-6"
                 onClick={onNext}
               >
                 {nextLabel}

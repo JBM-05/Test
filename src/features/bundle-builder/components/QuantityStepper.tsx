@@ -1,4 +1,4 @@
-import { Minus, Plus } from 'lucide-react'
+import { bundleBuilderAssets } from './assets'
 
 interface QuantityStepperProps {
   label: string
@@ -9,6 +9,71 @@ interface QuantityStepperProps {
   max?: number
   size?: 'compact' | 'default'
   testId?: string
+}
+
+interface QuantityButtonProps {
+  type: 'minus' | 'plus'
+  label: string
+  disabled: boolean
+  compact: boolean
+  onClick: () => void
+}
+
+function QuantityButton({
+  type,
+  label,
+  disabled,
+  compact,
+  onClick,
+}: QuantityButtonProps) {
+  const isMinus = type === 'minus'
+  const source = compact
+    ? disabled
+      ? isMinus
+        ? bundleBuilderAssets.quantity.minusDisabled
+        : bundleBuilderAssets.quantity.plusDisabled
+      : isMinus
+        ? bundleBuilderAssets.quantity.minus
+        : bundleBuilderAssets.quantity.plus
+    : disabled
+      ? isMinus
+        ? bundleBuilderAssets.quantity.cardMinusMuted
+        : bundleBuilderAssets.quantity.cardPlusMuted
+      : isMinus
+        ? bundleBuilderAssets.quantity.cardMinus
+        : bundleBuilderAssets.quantity.cardPlus
+
+  return (
+    <button
+      type="button"
+      className={[
+        'absolute top-[-8px] z-10 flex size-11 items-center justify-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 disabled:cursor-not-allowed xl:top-0 xl:size-7',
+        isMinus ? 'left-[-12px] xl:left-[-4px]' : 'right-[-12px] xl:right-[-4px]',
+      ].join(' ')}
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+    >
+      <span
+        className={[
+          'flex size-5 items-center justify-center rounded-[4px]',
+          compact
+            ? disabled
+              ? 'border border-gray-400 bg-[#f1f1f2]'
+              : 'bg-white'
+            : disabled
+              ? 'border-2 border-gray-200 bg-gray-200'
+              : isMinus
+                ? 'border-2 border-gray-300 bg-white'
+                : 'bg-gray-200',
+        ].join(' ')}
+        aria-hidden="true"
+        data-control-surface={compact ? 'compact' : 'default'}
+      >
+        <img className="size-2 object-contain" src={source} alt="" />
+      </span>
+    </button>
+  )
 }
 
 export function QuantityStepper({
@@ -23,43 +88,44 @@ export function QuantityStepper({
 }: QuantityStepperProps) {
   const canDecrease = !disabled && quantity > min
   const canIncrease = !disabled && quantity < max
-  const buttonClassName =
-    size === 'compact'
-      ? 'flex size-[45px] shrink-0 items-center justify-center rounded-full text-[#28252d] transition-colors hover:bg-[#f1eff5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5130d7] disabled:cursor-not-allowed disabled:text-[#b8b5bd] disabled:hover:bg-transparent sm:size-11 lg:size-9 xl:size-7 xl:rounded-md xl:border xl:border-[#e2e1e4] xl:bg-white'
-      : 'flex size-[45px] shrink-0 items-center justify-center rounded-full text-[#28252d] transition-colors hover:bg-[#f1eff5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5130d7] disabled:cursor-not-allowed disabled:text-[#b8b5bd] disabled:hover:bg-transparent sm:size-11 xl:size-7 xl:rounded-md xl:border xl:border-[#e2e1e4] xl:bg-white'
+  const compact = size === 'compact'
 
   return (
     <div
-      className="inline-flex min-h-11 items-center rounded-full border border-[#d9d6de] bg-white p-0.5 shadow-[0_1px_1px_rgba(20,16,28,0.03)] xl:min-h-7 xl:gap-1 xl:rounded-none xl:border-0 xl:bg-transparent xl:p-0 xl:shadow-none"
+      className={[
+        'relative h-7 shrink-0',
+        compact ? 'w-[72px]' : 'w-20',
+      ].join(' ')}
       role="group"
       aria-label={`${label} quantity`}
     >
-      <button
-        type="button"
-        className={buttonClassName}
-        onClick={() => onChange(Math.max(min, quantity - 1))}
+      <QuantityButton
+        type="minus"
+        label={`Decrease ${label}`}
         disabled={!canDecrease}
-        aria-label={`Decrease ${label}`}
-      >
-        <Minus aria-hidden="true" size={16} strokeWidth={2.25} />
-      </button>
+        compact={compact}
+        onClick={() => onChange(Math.max(min, quantity - 1))}
+      />
+
       <output
-        className="min-w-7 select-none text-center text-sm font-semibold tabular-nums text-[#1c1921] xl:min-w-4 xl:text-xs"
+        className={[
+          'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 select-none text-center font-medium tabular-nums text-ink',
+          compact ? 'text-sm leading-4' : 'text-base leading-5',
+        ].join(' ')}
         aria-live="polite"
         aria-label={`${label} quantity: ${quantity}`}
         data-testid={testId}
       >
         {quantity}
       </output>
-      <button
-        type="button"
-        className={buttonClassName}
-        onClick={() => onChange(Math.min(max, quantity + 1))}
+
+      <QuantityButton
+        type="plus"
+        label={`Increase ${label}`}
         disabled={!canIncrease}
-        aria-label={`Increase ${label}`}
-      >
-        <Plus aria-hidden="true" size={16} strokeWidth={2.25} />
-      </button>
+        compact={compact}
+        onClick={() => onChange(Math.min(max, quantity + 1))}
+      />
     </div>
   )
 }

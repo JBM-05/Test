@@ -1,12 +1,11 @@
-import { Check } from 'lucide-react'
-
-import type { VariantViewModel } from './ui-types'
+import type { VariantViewModel } from '../view-models'
 
 interface VariantSelectorProps {
   productId: string
   productName: string
   variants: readonly VariantViewModel[]
   activeSku: string
+  isProductSelected: boolean
   onChange: (sku: string) => void
 }
 
@@ -15,6 +14,7 @@ export function VariantSelector({
   productName,
   variants,
   activeSku,
+  isProductSelected,
   onChange,
 }: VariantSelectorProps) {
   if (variants.length <= 1) {
@@ -22,22 +22,26 @@ export function VariantSelector({
   }
 
   return (
-    <fieldset className="mt-5 xl:mt-1.5">
+    <fieldset
+      className="mt-5 xl:mt-[13px]"
+      data-testid={`variant-selector-${productId}`}
+    >
       <legend className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#6f6a75] xl:sr-only">
         Color
       </legend>
-      <div className="flex flex-wrap gap-2 xl:gap-1" role="radiogroup">
+      <div className="flex flex-wrap gap-2 xl:gap-[6px]" role="radiogroup">
         {variants.map((variant) => {
           const isActive = variant.sku === activeSku
+          const isVisuallySelected = isActive && isProductSelected
 
           return (
             <label
               key={variant.sku}
               className={[
-                'relative inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border bg-white px-3 py-2 text-sm font-medium transition-[border-color,box-shadow,background-color] has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#5130d7] has-[:focus-visible]:ring-offset-2 xl:min-h-7 xl:gap-1 xl:rounded-sm xl:px-2 xl:py-1 xl:text-[9px]',
-                isActive
-                  ? 'border-[#00a88f] bg-[#effbf8] text-[#007f6d] shadow-[0_0_0_1px_#00a88f]'
-                  : 'border-[#d9d6de] text-[#4d4853] hover:border-[#9a92a2]',
+                'relative inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium text-[#1f1f1f] has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand has-[:focus-visible]:ring-offset-2 xl:h-[26px] xl:min-h-[26px] xl:gap-0 xl:rounded-[2px] xl:border-[0.5px] xl:py-px xl:text-[10px] xl:tracking-[0.6px]',
+                isVisuallySelected
+                  ? 'border-[#0aa288] bg-[#f6fffc] xl:border-[rgba(10,162,136,0.5)] xl:px-[3px]'
+                  : 'border-[#cccccc] bg-white xl:border-[rgba(204,204,204,0.5)] xl:px-[5px]',
               ].join(' ')}
             >
               <input
@@ -50,13 +54,19 @@ export function VariantSelector({
                 aria-label={`${productName}, ${variant.label}`}
               />
               {variant.imageSrc ? (
-                <span className="size-5 overflow-hidden rounded-full border border-black/10 bg-white xl:size-4">
+                <span
+                  className="size-5 overflow-hidden rounded-full bg-white xl:rounded-[5px]"
+                  style={{
+                    width: variant.imageWidth ?? 22,
+                    height: variant.imageHeight ?? 22,
+                  }}
+                >
                   <img
                     className="size-full object-cover"
                     src={variant.imageSrc}
                     alt=""
-                    width={20}
-                    height={20}
+                    width={variant.imageWidth ?? 22}
+                    height={variant.imageHeight ?? 22}
                   />
                 </span>
               ) : (
@@ -67,9 +77,6 @@ export function VariantSelector({
                 />
               )}
               <span>{variant.label}</span>
-              {isActive ? (
-                <Check aria-hidden="true" className="text-[#008c78] xl:hidden" size={15} strokeWidth={2.5} />
-              ) : null}
             </label>
           )
         })}

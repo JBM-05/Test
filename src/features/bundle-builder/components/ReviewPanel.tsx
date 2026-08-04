@@ -1,27 +1,17 @@
-import {
-  Check,
-  LockKeyhole,
-  ShieldCheck,
-  Sparkles,
-  Truck,
-  WalletCards,
-} from 'lucide-react'
 import type { Ref } from 'react'
 import { useRef } from 'react'
 
-import { formatCurrency } from './format'
+import { formatCurrency } from '../formatting/currency'
+import type {
+  ReviewGroupViewModel,
+  ReviewLineViewModel,
+  ReviewTotalsViewModel,
+  SaveState,
+} from '../view-models'
+import { bundleBuilderAssets } from './assets'
 import { gsap, useGSAP } from './motion'
 import { QuantityStepper } from './QuantityStepper'
-import { SaveStatus, type SaveState } from './SaveStatus'
-import type { ReviewGroupViewModel, ReviewLineViewModel } from './ui-types'
-
-interface ReviewTotalsViewModel {
-  totalCents: number
-  compareAtCents: number
-  savingsCents: number
-  shippingCents: number
-  shippingCompareAtCents?: number
-}
+import { SaveStatus } from './SaveStatus'
 
 interface ReviewCopyViewModel {
   description: string
@@ -49,12 +39,33 @@ interface ReviewLineProps {
   onRemovedWhileFocused: () => void
 }
 
+function LinePrice({ line }: { line: ReviewLineViewModel }) {
+  return (
+    <div className="flex shrink-0 flex-col items-end justify-center text-right text-xs leading-4 tracking-[0.06px] xl:text-sm">
+      {line.compareAtCents !== undefined && line.compareAtCents > line.currentCents ? (
+        <span className="font-medium text-gray-600 line-through">
+          {formatCurrency(line.compareAtCents)}
+          {line.suffix ?? ''}
+        </span>
+      ) : null}
+      <span className="font-semibold text-brand">
+        {line.currentCents === 0 ? 'FREE' : formatCurrency(line.currentCents)}
+        {line.suffix ?? ''}
+      </span>
+    </div>
+  )
+}
+
 function ReviewLine({
   line,
   onQuantityChange,
   onRemovedWhileFocused,
 }: ReviewLineProps) {
   const rowRef = useRef<HTMLElement>(null)
+  const displayName = line.control === 'locked' ? `${line.name} (Required)` : line.name
+  const accessibleName = line.variantLabel
+    ? `${displayName}, ${line.variantLabel}`
+    : displayName
 
   useGSAP(
     () => {
@@ -77,92 +88,78 @@ function ReviewLine({
     { scope: rowRef },
   )
 
-  const accessibleName = line.variantLabel
-    ? `${line.name}, ${line.variantLabel}`
-    : line.name
-  const priceSuffix = line.suffix ? ` ${line.suffix}` : ''
-
   function updateQuantity(quantity: number) {
     const shouldRestoreFocus =
       quantity === 0 && rowRef.current?.contains(document.activeElement)
     onQuantityChange(line.sku, quantity)
 
-    if (shouldRestoreFocus) {
-      requestAnimationFrame(onRemovedWhileFocused)
-    }
+    if (shouldRestoreFocus) requestAnimationFrame(onRemovedWhileFocused)
   }
 
   return (
-    <article ref={rowRef} className="py-0" aria-label={accessibleName}>
-      <div className="flex gap-3 xl:gap-2">
-        <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#f5f4f6] p-1 xl:size-10">
+    <article
+      ref={rowRef}
+      className="flex w-full items-start gap-4"
+      aria-label={accessibleName}
+    >
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <div
+          className={[
+            'flex w-[41px] shrink-0 items-center justify-center overflow-hidden rounded-[5px] bg-white',
+            line.sku === 'sense-hub' ? 'h-10' : 'h-[41px]',
+          ].join(' ')}
+        >
           <img
-            className="max-h-full max-w-full object-contain"
+            className="size-full object-contain"
             src={line.imageSrc}
             alt={line.imageAlt}
-            width={64}
-            height={64}
+            width={41}
+            height={41}
             loading="lazy"
             decoding="async"
           />
         </div>
-        <div className="relative min-w-0 flex-1">
-          <div className="flex min-h-11 items-center justify-between gap-2 xl:min-h-10">
-            <div className="min-w-0 min-[380px]:pr-[116px] xl:pr-[78px]">
-              <h4 className="text-[11px] font-bold leading-4 text-[#211e25]">{line.name}</h4>
-              {line.variantLabel ? (
-                <p className="text-[9px] text-[#625b68]">{line.variantLabel}</p>
-              ) : null}
-            </div>
-            <p className="shrink-0 text-right text-[11px] font-bold text-[#5630c4]">
-              {line.compareAtCents !== undefined && line.compareAtCents > line.currentCents ? (
-                <span className="block text-[9px] font-medium text-[#625a67] line-through">
-                  {formatCurrency(line.compareAtCents)}
-                </span>
-              ) : null}
-              {line.currentCents === 0 ? 'FREE' : formatCurrency(line.currentCents)}
-              {priceSuffix ? (
-                <span className="block text-[9px] font-medium text-[#625b68]">{priceSuffix}</span>
-              ) : null}
-            </p>
-          </div>
 
-          <div className="mt-1 flex min-h-11 items-center justify-end gap-2 min-[380px]:absolute min-[380px]:right-[58px] min-[380px]:top-1/2 min-[380px]:mt-0 min-[380px]:-translate-y-1/2 xl:right-[54px] xl:min-h-7">
-            {line.control === 'quantity' ? (
-              <QuantityStepper
-                label={accessibleName}
-                quantity={line.quantity}
-                onChange={updateQuantity}
-                size="compact"
-                testId={`review-quantity-${line.sku}`}
-              />
-            ) : null}
+        <p
+          className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-xs font-normal leading-4 tracking-0 text-ink xl:overflow-visible xl:text-clip xl:whitespace-normal xl:text-sm xl:font-medium xl:tracking-[0.07px]"
+          data-testid="review-line-name"
+        >
+          {displayName}
+          {line.variantLabel ? <span className="sr-only">, {line.variantLabel}</span> : null}
+        </p>
 
-            {line.control === 'binary' ? (
-              <button
-                type="button"
-                className="min-h-11 rounded-full border border-[#d8d4dc] px-4 text-xs font-bold text-[#514a57] transition-colors hover:border-[#958d9b] hover:bg-[#f7f5f8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5130d7] focus-visible:ring-offset-2 xl:min-h-7 xl:px-2 xl:text-[9px]"
-                onClick={() => updateQuantity(0)}
-                aria-label={`Remove ${accessibleName} from system`}
-                aria-pressed={true}
-              >
-                Remove
-              </button>
-            ) : null}
-
-            {line.control === 'locked' ? (
-              <span className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-[#f2f0f4] px-3 text-xs font-semibold text-[#615a66] xl:min-h-7 xl:px-2 xl:text-[9px]">
-                <LockKeyhole aria-hidden="true" size={14} />
-                Required
-              </span>
-            ) : null}
-          </div>
-
-          {line.helperText ? (
-            <p className="sr-only">{line.helperText}</p>
-          ) : null}
-        </div>
+        {line.control === 'quantity' || line.control === 'locked' ? (
+          <QuantityStepper
+            label={accessibleName}
+            quantity={line.quantity}
+            onChange={updateQuantity}
+            disabled={line.control === 'locked'}
+            size="compact"
+            testId={`review-quantity-${line.sku}`}
+          />
+        ) : null}
       </div>
+
+      <LinePrice line={line} />
+      {line.helperText ? <p className="sr-only">{line.helperText}</p> : null}
+    </article>
+  )
+}
+
+function PlanLine({ line }: { line: ReviewLineViewModel }) {
+  return (
+    <article className="flex w-full items-start justify-between gap-4" aria-label={line.name}>
+      <div className="flex min-w-0 items-center gap-[3px]">
+        <img
+          className="h-[17px] w-[14px] shrink-0 object-contain xl:h-[23.704px] xl:w-5"
+          src={bundleBuilderAssets.review.planShield}
+          alt=""
+        />
+        <p className="text-sm font-bold leading-4 text-black">
+          Cam <span className="text-brand">Unlimited</span>
+        </p>
+      </div>
+      <LinePrice line={line} />
     </article>
   )
 }
@@ -194,7 +191,7 @@ function AnimatedTotal({ cents }: { cents: number }) {
   return (
     <p
       ref={totalRef}
-      className="text-[28px] font-extrabold tracking-[-0.035em] text-[#5630c4] xl:text-[22px]"
+      className="text-right text-2xl font-bold leading-8 tracking-[-0.03px] text-brand"
       data-testid="bundle-total"
     >
       {formatCurrency(cents)}
@@ -219,136 +216,180 @@ export function ReviewPanel({
   return (
     <aside
       ref={panelRef}
-      className="rounded-none border border-x-0 border-[#d9dce4] bg-[#eef4ff] p-4 shadow-none sm:rounded-xl sm:border-x sm:p-5 sm:shadow-[0_10px_28px_rgba(34,45,74,0.08)] xl:sticky xl:top-6 xl:rounded-md xl:p-4 xl:shadow-none"
+      className="flex h-[846px] w-full flex-col items-start bg-panel pt-[15px] xl:sticky xl:top-[49.36px] xl:h-[855px] xl:w-[399px] xl:rounded-[10px]"
       aria-label="Review your system"
       data-testid="review-panel"
     >
-      <div className="flex items-start border-b border-[#e9e6eb] pb-3">
-        <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#615a66] xl:text-[8px]">
-            Review your bundle
-          </p>
-          <h2
-            ref={headingRef}
-            id="review-title"
-            className="text-xl font-bold tracking-[-0.02em] text-[#211e25] outline-none xl:text-base"
-            tabIndex={-1}
-          >
-            Your security system
-          </h2>
-          <p className="mt-1 max-w-[320px] text-[10px] leading-4 text-[#625b68] xl:text-[9px] xl:leading-3.5">
-            {copy.description}
-          </p>
-        </div>
-      </div>
-
-      {hasItems ? (
-        <div className="divide-y divide-[#eeebef]">
-          {groups
-            .filter((group) => group.lines.length > 0)
-            .map((group) => (
-              <section key={group.id} className="py-0" aria-labelledby={`review-group-${group.id}`}>
-                <h3
-                  id={`review-group-${group.id}`}
-                  className="pt-2.5 text-[9px] font-bold uppercase tracking-[0.12em] text-[#5f5866] xl:text-[8px]"
-                >
-                  {group.label}
-                </h3>
-                <ul className="divide-y divide-[#f0edf1]" role="list">
-                  {group.lines.map((line) => (
-                    <li key={line.sku}>
-                      <ReviewLine
-                        line={line}
-                        onQuantityChange={onQuantityChange}
-                        onRemovedWhileFocused={() => headingRef.current?.focus()}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ))}
-        </div>
-      ) : (
-        <div className="flex flex-col items-center px-5 py-10 text-center">
-          <span className="flex size-12 items-center justify-center rounded-full bg-[#f1ecff] text-[#6033d8]">
-            <Sparkles aria-hidden="true" size={21} />
-          </span>
-          <h3 className="mt-4 text-base font-bold text-[#211e25]">Your system is ready to build</h3>
-          <p className="mt-1 max-w-[260px] text-sm leading-6 text-[#716b75]">
-            Add a product from any step and it will appear here instantly.
-          </p>
-        </div>
-      )}
-
-      <div className="border-t border-[#e9e6eb] pt-3">
-        <div className="flex items-center justify-between gap-4 text-sm xl:text-[11px]">
-          <span className="flex items-center gap-2 font-medium text-[#504a55]">
-            <Truck aria-hidden="true" size={17} />
-            {copy.shippingLabel}
-          </span>
-          <span className="text-right font-bold text-[#0b6b3e]">
-            {totals.shippingCompareAtCents !== undefined &&
-            totals.shippingCompareAtCents > totals.shippingCents ? (
-              <span className="block text-[10px] font-medium text-[#665e6a] line-through">
-                {formatCurrency(totals.shippingCompareAtCents)}
-              </span>
-            ) : null}
-            <span>
-              {totals.shippingCents === 0
-                ? copy.freeShippingLabel
-                : formatCurrency(totals.shippingCents)}
-            </span>
+      <div className="flex w-full flex-col gap-[5px]">
+        <div className="flex h-[10px] w-full items-center px-[15px] xl:h-3">
+          <span className="text-[10px] font-medium uppercase leading-none tracking-[1.6px] text-[#484848] xl:text-xs">
+            Review
           </span>
         </div>
-        <div className="mt-2 flex items-start gap-2 rounded-md bg-[#f5f2fc] p-2">
-          <ShieldCheck aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-[#6033d8]" size={20} />
-          <p className="text-[10px] leading-4 text-[#5e5765] xl:text-[9px] xl:leading-3.5">
-            <strong className="font-bold text-[#302a35]">{copy.guaranteeTitle}.</strong>{' '}
-            <span className="xl:hidden">{copy.guaranteeDescription}</span>
-          </p>
-        </div>
-        <p className="mt-2 flex items-center gap-2 text-[10px] leading-4 text-[#716b75] xl:text-[9px]">
-          <WalletCards aria-hidden="true" className="shrink-0" size={17} />
-          {copy.financingDescription}
-        </p>
-      </div>
 
-      <div className="mt-3 border-t border-[#e9e6eb] pt-3">
-        <div className="flex items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-bold text-[#3e3844] xl:text-xs">Total</p>
-            {totals.compareAtCents > totals.totalCents ? (
-              <p className="mt-0.5 text-sm text-[#665e6a] line-through xl:text-xs">
-                {formatCurrency(totals.compareAtCents)}
-              </p>
-            ) : null}
+        <div
+          className="flex h-[816px] w-full flex-col items-start gap-[10px] overflow-x-hidden overflow-y-auto bg-panel px-5 pb-[31px] pt-5 overscroll-contain xl:h-[823px] xl:w-[390px]"
+          data-testid="review-scroll-region"
+        >
+          <div className="flex w-full flex-col items-start gap-[5px] tracking-[0.6px]">
+            <h2
+              ref={headingRef}
+              id="review-title"
+              className="text-[22px] font-semibold leading-none text-copy outline-none"
+              tabIndex={-1}
+            >
+              Your security system
+            </h2>
+            <p className="w-full text-xs font-medium leading-4 text-[rgba(31,31,31,0.75)] xl:text-sm xl:leading-[1.3]">
+              {copy.description}
+            </p>
           </div>
-          <AnimatedTotal cents={totals.totalCents} />
+
+          {hasItems ? (
+            <div className="flex w-full flex-col items-start gap-[10px]">
+              {groups
+                .filter((group) => group.lines.length > 0)
+                .map((group) => (
+                  <section
+                    key={group.id}
+                    className="relative flex w-full flex-col items-start gap-2 pt-[15px] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gray-400 before:content-[''] xl:before:-top-px xl:before:h-0.5 xl:before:border-b xl:before:border-[#e1e8f2] xl:before:bg-[#dae1ea]"
+                    aria-labelledby={`review-group-${group.id}`}
+                  >
+                    <h3
+                      id={`review-group-${group.id}`}
+                      className="text-xs font-normal uppercase leading-4 tracking-[0.36px] text-gray-500"
+                      data-figma-contrast-exception="review-category"
+                    >
+                      {group.id === 'plan' ? (
+                        <>
+                          <span className="xl:hidden">Home monitoring plan</span>
+                          <span className="hidden xl:inline">Plan</span>
+                        </>
+                      ) : (
+                        group.label
+                      )}
+                    </h3>
+                    <div
+                      className={[
+                        'flex w-full flex-col items-start',
+                        group.id === 'sensors' ? 'gap-2' : 'gap-3',
+                      ].join(' ')}
+                      role="list"
+                    >
+                      {group.lines.map((line) => (
+                        <div key={line.sku} className="w-full" role="listitem">
+                          {group.id === 'plan' ? (
+                            <PlanLine line={line} />
+                          ) : (
+                            <ReviewLine
+                              line={line}
+                              onQuantityChange={onQuantityChange}
+                              onRemovedWhileFocused={() => headingRef.current?.focus()}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+            </div>
+          ) : (
+            <div className="border-t border-gray-400 py-10 text-center">
+              <p className="font-semibold text-copy">Your system is ready to build</p>
+              <p className="mt-1 text-sm text-muted">Add a product and it will appear here.</p>
+            </div>
+          )}
+
+          <div className="relative flex w-full flex-col items-start pt-[15px] before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gray-400 before:content-[''] xl:before:-top-px xl:before:h-0.5 xl:before:border-b xl:before:border-[#e1e8f2] xl:before:bg-[#dae1ea]">
+            <div className="flex w-full items-center gap-4">
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <span className="flex size-[41px] shrink-0 items-center justify-center rounded-[5px] bg-white">
+                  <img
+                    className="size-[29px] object-contain"
+                    src={bundleBuilderAssets.review.delivery}
+                    alt=""
+                  />
+                </span>
+                <span className="text-xs font-medium leading-4 text-ink xl:text-sm">
+                  {copy.shippingLabel}
+                </span>
+              </div>
+              <div className="flex flex-col items-end text-xs leading-4 xl:text-sm">
+                {totals.shippingCompareAtCents !== undefined &&
+                totals.shippingCompareAtCents > totals.shippingCents ? (
+                  <span className="font-medium text-gray-600 line-through">
+                    {formatCurrency(totals.shippingCompareAtCents)}
+                  </span>
+                ) : null}
+                <span className="font-semibold text-brand">
+                  {totals.shippingCents === 0
+                    ? copy.freeShippingLabel
+                    : formatCurrency(totals.shippingCents)}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex w-full flex-col items-start gap-2">
+            <div className="flex w-full flex-col items-start">
+              <div className="flex w-full flex-col items-start gap-1">
+                <div className="flex w-full items-center justify-between">
+                  <img
+                    className="size-[78px] shrink-0 object-cover"
+                    src={bundleBuilderAssets.review.satisfactionBadge}
+                    alt={`${copy.guaranteeTitle}. ${copy.guaranteeDescription}`}
+                  />
+                  <div className="flex self-stretch items-center">
+                    <div className="flex h-full flex-col items-end justify-center gap-2">
+                      <span className="inline-flex h-[18px] items-center justify-center rounded-[3px] bg-brand px-2 text-xs font-medium leading-normal tracking-[-0.6px] text-white">
+                        {copy.financingDescription}
+                      </span>
+                      <div className="flex items-baseline gap-2 whitespace-nowrap">
+                        {totals.compareAtCents > totals.totalCents ? (
+                          <span
+                            className="text-lg font-medium leading-5 tracking-[0.045px] text-gray-600 line-through"
+                            data-figma-contrast-exception="compare-total"
+                          >
+                            {formatCurrency(totals.compareAtCents)}
+                          </span>
+                        ) : null}
+                        <AnimatedTotal cents={totals.totalCents} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex w-full flex-col items-start gap-1 pt-[10px]">
+                  {hasSavings ? (
+                    <p
+                      className="w-full text-center text-xs font-semibold leading-none tracking-[-0.056px] text-success"
+                      data-figma-contrast-exception="savings"
+                    >
+                      Congrats! You’re saving {formatCurrency(totals.savingsCents)} on your security bundle!
+                    </p>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="font-checkout flex h-12 w-full items-center justify-center rounded-[4px] bg-brand px-4 text-[17px] font-bold leading-normal text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:bg-gray-400"
+                    onClick={onCheckout}
+                    disabled={!hasItems}
+                  >
+                    Checkout
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="relative w-full text-center text-xs font-normal italic leading-[1.2] tracking-[-0.016px] text-[#484848] underline before:absolute before:-inset-y-3 before:inset-x-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand xl:text-sm"
+              onClick={onSave}
+            >
+              Save my system for later
+            </button>
+            <SaveStatus state={saveState} />
+          </div>
         </div>
-
-        {hasSavings ? (
-          <p className="mt-2 flex items-center justify-center gap-1.5 rounded-full bg-[#e1f8f3] px-3 py-1 text-[10px] font-bold text-[#006b5c] xl:text-[9px]">
-            <Check aria-hidden="true" size={15} strokeWidth={2.6} />
-            You save {formatCurrency(totals.savingsCents)}
-          </p>
-        ) : null}
-
-        <button
-          type="button"
-          className="mt-2 min-h-12 w-full rounded-sm bg-[#6436e8] px-6 text-sm font-bold text-white shadow-[0_8px_18px_rgba(100,54,232,0.2)] transition-[background-color,transform,box-shadow] hover:bg-[#5428d2] hover:shadow-[0_10px_22px_rgba(100,54,232,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5130d7] focus-visible:ring-offset-2 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-[#c8c3ce] disabled:shadow-none xl:min-h-10 xl:text-xs"
-          onClick={onCheckout}
-          disabled={!hasItems}
-        >
-          Checkout
-        </button>
-        <button
-          type="button"
-          className="mx-auto mt-1 inline-flex min-h-11 w-full items-center justify-center rounded px-1 text-sm font-bold text-[#5630c4] underline decoration-[#a99bce] underline-offset-4 hover:text-[#3f1e9b] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5130d7] xl:min-h-7 xl:text-[9px]"
-          onClick={onSave}
-        >
-          Save my system for later
-        </button>
-        <SaveStatus state={saveState} />
       </div>
     </aside>
   )

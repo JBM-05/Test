@@ -40,6 +40,8 @@ export interface ProductVariant {
   readonly priceCents: MoneyCents
   readonly compareAtCents?: MoneyCents
   readonly image?: ProductImage
+  readonly selectorImage?: ProductImage
+  readonly reviewImage?: ProductImage
 }
 
 interface ProductBase {
@@ -50,6 +52,9 @@ interface ProductBase {
   readonly description: string
   readonly details: readonly string[]
   readonly image: ProductImage
+  readonly cardImage?: ProductImage
+  readonly cardImageIncludesBadge?: boolean
+  readonly reviewImage?: ProductImage
   readonly badge?: string
   readonly billingCadence: BillingCadence
   readonly selection: ProductSelection

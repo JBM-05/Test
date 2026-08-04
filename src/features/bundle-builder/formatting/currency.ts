@@ -1,4 +1,4 @@
-import { bundleCatalog } from './catalog'
+import { bundleCatalog } from '../domain/catalog'
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',

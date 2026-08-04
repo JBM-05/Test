@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "references": [
+    {
+      "filename": "desktop-1440x1077.png",
+      "width": 1440,
+      "height": 1077,
+      "sha256": "52a0bbeeab41057cb07ebca157c4739a280529d46f94551e0e7894474de08581"
+    },
+    {
+      "filename": "mobile-390x1252.png",
+      "width": 390,
+      "height": 1252,
+      "sha256": "c4c3a7589757440879aaac7f0ca8e0af188623aa008c4a8b83d24b16d5bfcfee"
+    },
+    {
+      "filename": "component-overview-1440x1606.png",
+      "width": 1440,
+      "height": 1606,
+      "sha256": "ef4bf9130a4fbc6860cbda756a41bfbaeef537f54bc3f7683ccfe9931c672c27"
+    }
+  ]
+}

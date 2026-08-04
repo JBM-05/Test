@@ -1,6 +1,6 @@
 import { AlertCircle, CheckCircle2, Cloud, CloudOff } from 'lucide-react'
 
-export type SaveState = 'idle' | 'restored' | 'unsaved' | 'saved' | 'error'
+import type { SaveState } from '../view-models'
 
 interface SaveStatusProps {
   state: SaveState
@@ -26,10 +26,7 @@ export function SaveStatus({ state }: SaveStatusProps) {
 
   return (
     <p
-      className={[
-        'mt-2 flex min-h-5 items-center justify-center gap-1.5 text-xs xl:mt-0.5 xl:text-[9px]',
-        state === 'error' ? 'text-[#ad1f3d]' : 'text-[#5f5866]',
-      ].join(' ')}
+      className="sr-only"
       aria-live="polite"
       data-testid="save-status"
     >

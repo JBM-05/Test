@@ -54,7 +54,7 @@
       "description": "Try your new security system risk-free with our satisfaction guarantee."
     },
     "financing": {
-      "description": "As low as $19/mo with affirm",
+      "description": "as low as $19.19/mo",
       "learnMoreLabel": "Learn more"
     }
   },
@@ -72,10 +72,23 @@
         "Indoor and outdoor weather resistance"
       ],
       "image": {
-        "src": "/assets/products/cam-v4.jpg",
+        "src": "/assets/figma/cam-v4.png",
         "alt": "Wyze Cam v4",
-        "width": 480,
-        "height": 480
+        "width": 1100,
+        "height": 1100
+      },
+      "cardImage": {
+        "src": "/assets/figma/cam-v4-rendered-with-badge.png",
+        "alt": "Wyze Cam v4",
+        "width": 101,
+        "height": 137
+      },
+      "cardImageIncludesBadge": true,
+      "reviewImage": {
+        "src": "/assets/figma/review-cam-v4.png",
+        "alt": "Wyze Cam v4",
+        "width": 41,
+        "height": 41
       },
       "badge": "Save 22%",
       "billingCadence": "one-time",
@@ -85,6 +98,12 @@
           "sku": "cam-v4-white",
           "label": "White",
           "swatch": "#F3F3F1",
+          "selectorImage": {
+            "src": "/assets/figma/selector-cam-v4-white.png",
+            "alt": "White Wyze Cam v4",
+            "width": 28,
+            "height": 28
+          },
           "priceCents": 2798,
           "compareAtCents": 3598
         },
@@ -92,6 +111,12 @@
           "sku": "cam-v4-grey",
           "label": "Grey",
           "swatch": "#797C7D",
+          "selectorImage": {
+            "src": "/assets/figma/selector-cam-v4-grey.png",
+            "alt": "Grey Wyze Cam v4",
+            "width": 28,
+            "height": 27
+          },
           "priceCents": 2798,
           "compareAtCents": 3598
         },
@@ -99,6 +124,12 @@
           "sku": "cam-v4-black",
           "label": "Black",
           "swatch": "#222222",
+          "selectorImage": {
+            "src": "/assets/figma/selector-cam-v4-black.png",
+            "alt": "Black Wyze Cam v4",
+            "width": 23,
+            "height": 22
+          },
           "priceCents": 2798,
           "compareAtCents": 3598
         }
@@ -117,10 +148,22 @@
         "Indoor and outdoor weather resistance"
       ],
       "image": {
-        "src": "/assets/products/cam-pan-v3.webp",
+        "src": "/assets/figma/cam-pan-v3.png",
         "alt": "Wyze Cam Pan v3",
-        "width": 800,
-        "height": 800
+        "width": 713,
+        "height": 713
+      },
+      "cardImage": {
+        "src": "/assets/figma/cam-pan-v3-rendered.png",
+        "alt": "Wyze Cam Pan v3",
+        "width": 101,
+        "height": 137
+      },
+      "reviewImage": {
+        "src": "/assets/figma/review-cam-pan-v3.png",
+        "alt": "Wyze Cam Pan v3",
+        "width": 41,
+        "height": 41
       },
       "badge": "Save 17%",
       "billingCadence": "one-time",
@@ -130,6 +173,12 @@
           "sku": "cam-pan-v3-white",
           "label": "White",
           "swatch": "#F3F3F1",
+          "selectorImage": {
+            "src": "/assets/figma/selector-cam-pan-v3-white.png",
+            "alt": "White Wyze Cam Pan v3",
+            "width": 22,
+            "height": 22
+          },
           "priceCents": 2399,
           "compareAtCents": 2899
         },
@@ -137,6 +186,12 @@
           "sku": "cam-pan-v3-black",
           "label": "Black",
           "swatch": "#222222",
+          "selectorImage": {
+            "src": "/assets/figma/selector-cam-pan-v3-black.png",
+            "alt": "Black Wyze Cam Pan v3",
+            "width": 22,
+            "height": 22
+          },
           "priceCents": 2399,
           "compareAtCents": 2899
         }
@@ -155,11 +210,18 @@
         "160° wide-angle field of view"
       ],
       "image": {
-        "src": "/assets/products/cam-floodlight-v2.jpg",
+        "src": "/assets/figma/floodlight-v2.png",
         "alt": "Wyze Cam Floodlight v2",
-        "width": 480,
-        "height": 480
+        "width": 713,
+        "height": 713
       },
+      "cardImage": {
+        "src": "/assets/figma/floodlight-v2-rendered-with-badge.png",
+        "alt": "Wyze Cam Floodlight v2",
+        "width": 100,
+        "height": 151
+      },
+      "cardImageIncludesBadge": true,
       "badge": "Save 22%",
       "billingCadence": "one-time",
       "selection": { "mode": "quantity" },
@@ -168,6 +230,12 @@
           "sku": "floodlight-v2-white",
           "label": "White",
           "swatch": "#F3F3F1",
+          "selectorImage": {
+            "src": "/assets/figma/selector-floodlight-v2-white.png",
+            "alt": "White Wyze Cam Floodlight v2",
+            "width": 24,
+            "height": 25
+          },
           "priceCents": 6998,
           "compareAtCents": 8998
         },
@@ -175,6 +243,12 @@
           "sku": "floodlight-v2-black",
           "label": "Black",
           "swatch": "#222222",
+          "selectorImage": {
+            "src": "/assets/figma/selector-floodlight-v2-black.png",
+            "alt": "Black Wyze Cam Floodlight v2",
+            "width": 22,
+            "height": 22
+          },
           "priceCents": 6998,
           "compareAtCents": 8998
         }
@@ -193,10 +267,16 @@
         "Smart notifications and two-way audio"
       ],
       "image": {
-        "src": "/assets/products/duo-cam-doorbell.jpg",
+        "src": "/assets/figma/duo-cam-doorbell.png",
         "alt": "Wyze Duo Cam Doorbell",
-        "width": 480,
-        "height": 480
+        "width": 713,
+        "height": 713
+      },
+      "cardImage": {
+        "src": "/assets/figma/duo-cam-doorbell-rendered.png",
+        "alt": "Wyze Duo Cam Doorbell",
+        "width": 101,
+        "height": 101
       },
       "billingCadence": "one-time",
       "selection": { "mode": "quantity" },
@@ -216,10 +296,16 @@
         "Integrated spotlight and siren"
       ],
       "image": {
-        "src": "/assets/products/battery-cam-pro.jpg",
+        "src": "/assets/figma/battery-cam-pro.png",
         "alt": "Wyze Battery Cam Pro",
-        "width": 480,
-        "height": 480
+        "width": 713,
+        "height": 713
+      },
+      "cardImage": {
+        "src": "/assets/figma/battery-cam-pro-rendered.png",
+        "alt": "Wyze Battery Cam Pro",
+        "width": 101,
+        "height": 101
       },
       "billingCadence": "one-time",
       "selection": { "mode": "quantity" },
@@ -228,12 +314,24 @@
           "sku": "battery-cam-pro-white",
           "label": "White",
           "swatch": "#F3F3F1",
+          "selectorImage": {
+            "src": "/assets/figma/selector-battery-cam-pro-white.png",
+            "alt": "White Wyze Battery Cam Pro",
+            "width": 22,
+            "height": 22
+          },
           "priceCents": 8998
         },
         {
           "sku": "battery-cam-pro-black",
           "label": "Black",
           "swatch": "#222222",
+          "selectorImage": {
+            "src": "/assets/figma/selector-battery-cam-pro-black.png",
+            "alt": "Black Wyze Battery Cam Pro",
+            "width": 22,
+            "height": 22
+          },
           "priceCents": 8998
         }
       ]
@@ -268,7 +366,7 @@
       "id": "motion-sensor",
       "stepId": "sensors",
       "reviewCategory": "sensors",
-      "name": "Wyze Motion Sensor",
+      "name": "Wyze Sense Motion Sensor",
       "description": "Know when motion is detected anywhere in your home.",
       "details": [
         "Compact, wire-free placement",
@@ -276,10 +374,16 @@
         "Requires Wyze Sense Hub"
       ],
       "image": {
-        "src": "/assets/products/motion-sensor.jpg",
+        "src": "/assets/figma/motion-sensor.png",
         "alt": "Wyze Motion Sensor",
-        "width": 480,
-        "height": 480
+        "width": 280,
+        "height": 280
+      },
+      "reviewImage": {
+        "src": "/assets/figma/review-motion-sensor.png",
+        "alt": "Wyze Motion Sensor",
+        "width": 41,
+        "height": 41
       },
       "billingCadence": "one-time",
       "selection": { "mode": "quantity" },
@@ -299,10 +403,16 @@
         "One hub supports your sensor system"
       ],
       "image": {
-        "src": "/assets/products/sense-hub.jpg",
+        "src": "/assets/figma/sense-hub.png",
         "alt": "Wyze Sense Hub",
-        "width": 480,
-        "height": 480
+        "width": 1100,
+        "height": 1100
+      },
+      "reviewImage": {
+        "src": "/assets/figma/review-sense-hub.png",
+        "alt": "Wyze Sense Hub",
+        "width": 41,
+        "height": 40
       },
       "billingCadence": "one-time",
       "selection": {
@@ -319,7 +429,7 @@
       "id": "microsd-256gb",
       "stepId": "accessories",
       "reviewCategory": "accessories",
-      "name": "Wyze 256GB MicroSD Card",
+      "name": "Wyze MicroSD Card (256GB)",
       "description": "Record continuously and store more video locally.",
       "details": [
         "256GB local storage",
@@ -327,10 +437,16 @@
         "No cloud connection required for playback"
       ],
       "image": {
-        "src": "/assets/products/microsd.jpg",
+        "src": "/assets/figma/microsd-256gb.png",
         "alt": "Wyze 256GB MicroSD Card",
-        "width": 480,
-        "height": 480
+        "width": 493,
+        "height": 494
+      },
+      "reviewImage": {
+        "src": "/assets/figma/review-microsd-256gb.png",
+        "alt": "Wyze 256GB MicroSD Card",
+        "width": 41,
+        "height": 41
       },
       "billingCadence": "one-time",
       "selection": { "mode": "quantity" },

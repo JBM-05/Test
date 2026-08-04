@@ -4,11 +4,13 @@ const isCI = Boolean(process.env.CI)
 
 export default defineConfig({
   testDir: './e2e',
+  testIgnore: '**/*.figma.spec.ts',
+  globalSetup: './e2e/behavior-global-setup.ts',
   snapshotPathTemplate: '{testDir}/__screenshots__/{arg}{ext}',
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: isCI,
   retries: isCI ? 2 : 0,
-  workers: isCI ? 1 : undefined,
+  workers: 1,
   reporter: isCI
     ? [['line'], ['html', { open: 'never' }]]
     : [['list'], ['html', { open: 'never' }]],
@@ -16,7 +18,6 @@ export default defineConfig({
     timeout: 5_000,
   },
   use: {
-    baseURL: 'http://127.0.0.1:4173',
     colorScheme: 'light',
     screenshot: 'only-on-failure',
     trace: 'on-first-retry',
@@ -52,10 +53,4 @@ export default defineConfig({
       },
     },
   ],
-  webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 4173',
-    url: 'http://127.0.0.1:4173',
-    reuseExistingServer: !isCI,
-    timeout: 120_000,
-  },
 })

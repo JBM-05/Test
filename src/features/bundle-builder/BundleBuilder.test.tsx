@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { BundleBuilder } from './BundleBuilder'
-import { BUNDLE_STORAGE_KEY } from './domain'
+import { BUNDLE_STORAGE_KEY } from './persistence'
 
 describe('BundleBuilder', () => {
   beforeEach(() => {
@@ -48,6 +48,65 @@ describe('BundleBuilder', () => {
 
     await user.click(within(card).getByRole('radio', { name: 'Wyze Cam v4, Grey' }))
     expect(screen.getByTestId('quantity-cam-v4-grey')).toHaveTextContent('0')
+  })
+
+  it('renders required and plan items as non-destructive review summaries', () => {
+    render(<BundleBuilder />)
+
+    const review = screen.getByTestId('review-panel')
+    const requiredHub = within(review).getByRole('article', {
+      name: 'Wyze Sense Hub (Required)',
+    })
+
+    expect(
+      within(requiredHub).queryByText('Required', { exact: true }),
+    ).not.toBeInTheDocument()
+    expect(
+      within(requiredHub).getByRole('group', {
+        name: 'Wyze Sense Hub (Required) quantity',
+      }),
+    ).toBeVisible()
+    expect(
+      within(requiredHub).getByRole('button', {
+        name: 'Decrease Wyze Sense Hub (Required)',
+      }),
+    ).toBeDisabled()
+    expect(
+      within(requiredHub).getByRole('button', {
+        name: 'Increase Wyze Sense Hub (Required)',
+      }),
+    ).toBeDisabled()
+    expect(screen.getByTestId('review-quantity-sense-hub')).toHaveTextContent('1')
+
+    const plan = within(review).getByRole('article', {
+      name: 'Cam Unlimited',
+    })
+    expect(within(plan).queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('keeps Figma selector thumbnails separate from product and review imagery', () => {
+    render(<BundleBuilder />)
+
+    const card = screen.getByRole('article', { name: 'Wyze Cam v4' })
+    const mainImage = within(card).getByRole('img', { name: 'Wyze Cam v4' })
+    expect(mainImage).toHaveAttribute('src', '/assets/figma/cam-v4.png')
+
+    const whiteVariant = within(card).getByRole('radio', {
+      name: 'Wyze Cam v4, White',
+    })
+    expect(whiteVariant.closest('label')?.querySelector('img')).toHaveAttribute(
+      'src',
+      '/assets/figma/selector-cam-v4-white.png',
+    )
+
+    const reviewLine = within(screen.getByTestId('review-panel')).getByRole(
+      'article',
+      { name: 'Wyze Cam v4, White' },
+    )
+    expect(within(reviewLine).getByRole('img', { name: 'Wyze Cam v4' })).toHaveAttribute(
+      'src',
+      '/assets/figma/review-cam-v4.png',
+    )
   })
 
   it('advances the accordion and focuses the next step', async () => {

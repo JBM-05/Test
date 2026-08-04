@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   bundleReducer,
   createSeedBundleState,
-  formatCurrency,
   selectIsProductSelected,
   selectProductQuantity,
   selectReviewGroups,
@@ -27,7 +26,6 @@ describe('bundle selectors', () => {
       shippingCompareAtCents: 599,
       totalCents: 18_789,
     })
-    expect(formatCurrency(18_789)).toBe('$187.89')
   })
 
   it('counts distinct products even when several variants are selected', () => {

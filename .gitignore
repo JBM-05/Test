@@ -12,6 +12,7 @@ dist
 dist-ssr
 coverage
 playwright-report
+playwright-visual-report
 test-results
 .tmp-*
 *.local

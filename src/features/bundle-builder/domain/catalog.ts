@@ -63,6 +63,12 @@ function optionalString(value: unknown, path: string): string | undefined {
   return value === undefined ? undefined : string(value, path)
 }
 
+function optionalBoolean(value: unknown, path: string): boolean | undefined {
+  if (value === undefined) return undefined
+  if (typeof value !== 'boolean') return fail(path, 'a boolean')
+  return value
+}
+
 function integer(value: unknown, path: string, minimum = 0): number {
   if (!Number.isSafeInteger(value) || (value as number) < minimum) {
     return fail(path, `a safe integer greater than or equal to ${minimum}`)
@@ -131,6 +137,17 @@ function parseVariant(value: unknown, path: string): ProductVariant {
     ...(source.image === undefined
       ? {}
       : { image: parseImage(source.image, `${path}.image`) }),
+    ...(source.selectorImage === undefined
+      ? {}
+      : {
+          selectorImage: parseImage(
+            source.selectorImage,
+            `${path}.selectorImage`,
+          ),
+        }),
+    ...(source.reviewImage === undefined
+      ? {}
+      : { reviewImage: parseImage(source.reviewImage, `${path}.reviewImage`) }),
   }
 }
 
@@ -159,6 +176,19 @@ function parseProduct(value: unknown, index: number): BundleProduct {
       string(detail, `${path}.details[${detailIndex}]`),
     ),
     image: parseImage(source.image, `${path}.image`),
+    ...(source.cardImage === undefined
+      ? {}
+      : { cardImage: parseImage(source.cardImage, `${path}.cardImage`) }),
+    ...(() => {
+      const cardImageIncludesBadge = optionalBoolean(
+        source.cardImageIncludesBadge,
+        `${path}.cardImageIncludesBadge`,
+      )
+      return cardImageIncludesBadge === undefined ? {} : { cardImageIncludesBadge }
+    })(),
+    ...(source.reviewImage === undefined
+      ? {}
+      : { reviewImage: parseImage(source.reviewImage, `${path}.reviewImage`) }),
     billingCadence: billingCadence as BillingCadence,
     selection: parseSelection(source.selection, `${path}.selection`),
     ...(() => {

@@ -32,16 +32,21 @@ npm run preview
 | `npm run build` | Type-check and create the production build. |
 | `npm run lint` | Run ESLint. |
 | `npm run typecheck` | Run TypeScript without emitting files. |
+| `npm run assets:verify` | Verify every catalog and component design asset exists and is non-empty. |
+| `npm run fonts:verify` | Verify the six licensed Figma webfonts are present and valid WOFF2 files. |
+| `npm run references:verify` | Verify the dimensions and SHA-256 hashes of the immutable Figma exports. |
 | `npm run test:run` | Run the Vitest unit and integration suite once. |
 | `npm run test:coverage` | Run Vitest and produce a coverage report. |
-| `npm run e2e` | Run the Playwright browser suite. |
-| `npm run check` | Run the complete CI verification sequence. |
+| `npm run e2e:behavior` | Run interaction, responsive-layout, dialog, persistence, and accessibility checks. |
+| `npm run e2e:visual` | Compare the built app with the immutable desktop and mobile Figma exports. |
+| `npm run visual:verify` | Verify licensed fonts and assets, build, then enforce a zero-pixel Figma diff. |
+| `npm run check` | Run the complete non-visual CI verification sequence. |
 
 Install Playwright's Chromium binary before the first local browser run:
 
 ```bash
 npx playwright install chromium
-npm run e2e
+npm run e2e:behavior
 ```
 
 ## Product and architecture decisions
@@ -51,7 +56,7 @@ npm run e2e
 - **Variant-safe quantities.** Each variant has a stable SKU and independent quantity. Changing the active color changes which quantity the product-card stepper edits without discarding the other variants.
 - **Domain invariants at the state boundary.** Counts cannot become negative, the plan is binary, and selecting a motion sensor adds the required Sense Hub. Removing all motion sensors removes that hub.
 - **Client-only by design.** There is no router, commerce backend, or payment integration. Checkout opens a confirmation dialog so the prototype remains focused on configuration behavior.
-- **Local assets and predictable rendering.** Product images were exported or downloaded from official Wyze product pages, then resized and compressed before being committed locally. The app avoids runtime third-party image requests and unnecessary transfer cost while retaining deterministic rendering.
+- **Local assets and predictable rendering.** Product, selector, control, review, delivery, and guarantee assets are checked-in Figma exports at their rendered target sizes. The app avoids runtime third-party image requests, and an asset preflight prevents broken catalog or component references from reaching CI.
 
 Feature code is grouped under `src/features/bundle-builder/`, with catalog/domain code kept separate from persistence, presentation components, and animation hooks. This keeps pricing and selection rules testable without rendering React and keeps framework details out of the core state transitions.
 
@@ -66,10 +71,14 @@ Hydration accepts only the current schema/catalog versions and known product, va
 - Accordion headers are native buttons following the WAI-ARIA accordion pattern, with labelled regions and programmatic focus when advancing.
 - Variant choices are radio groups; quantity controls have contextual accessible names and disabled states; status changes are announced through a polite live region.
 - Learn More and Checkout use modal-dialog semantics, support Escape, trap focus while open, and restore focus to the trigger on close.
-- Interactive targets remain usable at phone widths, focus indicators are visible, and state is not communicated by color alone.
+- Interactive targets remain usable at phone widths, focus indicators are visible, and radio/pressed/expanded states are exposed programmatically.
 - GSAP is limited to presentational accordion, card, review-line, total, and dialog transitions. React state and ARIA remain authoritative. `prefers-reduced-motion` resolves animations directly to their final state.
 
-The automated suite currently includes 18 Vitest unit/integration tests for reducer, selector, persistence, and React interaction behavior, plus Playwright flows at desktop/tablet/phone widths, axe accessibility checks, and committed visual baselines for the authoritative Figma viewports. GitHub Actions installs from the lockfile and runs the same `npm run check` command used locally.
+The supplied Figma palette contains documented contrast exceptions for review category labels, savings copy, and the struck-through comparison total. The axe suite continues to enforce WCAG A/AA rules everywhere else; it does not represent those exact design tokens as AA-compliant.
+
+The automated suite currently includes 24 Vitest unit/integration tests for reducer, selector, persistence, formatting, and React interaction behavior, plus 24 Playwright behavior/accessibility checks across desktop, tablet, mobile, and narrow-mobile viewports. A separate deterministic visual suite compares the production build with immutable Figma exports at 1440x1077 and 390x1252 and requires zero non-antialiasing pixel differences.
+
+Gilroy and TT Norms Pro are commercial fonts and are not redistributed by this repository. Add licensed WOFF2 copies using the filenames documented in `public/assets/fonts/README.md`; `npm run fonts:verify` fails fast until they are present. This keeps the normal behavior suite runnable while preventing an approximate fallback font from being accepted by the exact visual gate.
 
 Coverage gates are enforced at 80% for statements, functions, and lines and 75% for branches. The final verified run reports 83.59% statement coverage and 86.47% line coverage. A production Lighthouse audit scored 90 for Performance and 100 for Accessibility, Best Practices, and SEO; these scores describe that audited environment and are not treated as permanent guarantees.
 
@@ -79,4 +88,4 @@ Coverage gates are enforced at 80% for statements, functions, and lines and 75% 
 - [Mobile reference - Figma node 74:19845](https://www.figma.com/design/JYf61etQVqeseX7oY5alGz/Frontend-Test-Figma?node-id=74-19845)
 - [Responsive inspiration - Figma node 70:14135](https://www.figma.com/design/JYf61etQVqeseX7oY5alGz/Frontend-Test-Figma?node-id=70-14135)
 
-The desktop and mobile nodes are the fidelity targets. The intermediate node is responsive guidance rather than a pixel-perfect target. Figma access was view-only, so structured layer inspection and direct design-token extraction were unavailable; measurements and visual decisions were reproduced from the rendered frames. The responsive implementation therefore prioritizes fidelity at the supplied target sizes and coherent behavior between them.
+The desktop and mobile nodes are the page-level fidelity targets. The intermediate node is a component/layout reference rather than a second screenshot expectation at the same viewport. Exact exports, structured layer measurements, design tokens, target-size raster assets, and intrinsic SVG controls from the supplied Figma file drive the implementation. See `e2e/figma-reference/README.md` for the immutable-reference contract and the one narrowly masked catalog-copy discrepancy.

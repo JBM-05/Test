@@ -32,7 +32,7 @@ function getSkuPresentation(
     return {
       priceCents: product.priceCents,
       compareAtCents: product.compareAtCents ?? product.priceCents,
-      image: product.image,
+      image: product.reviewImage ?? product.image,
     }
   }
 
@@ -42,7 +42,11 @@ function getSkuPresentation(
     label: variant.label,
     priceCents: variant.priceCents,
     compareAtCents: variant.compareAtCents ?? variant.priceCents,
-    image: variant.image ?? product.image,
+    image:
+      variant.reviewImage ??
+      product.reviewImage ??
+      variant.image ??
+      product.image,
   }
 }
 
