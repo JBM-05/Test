@@ -5,48 +5,20 @@ import { expect, test } from '@playwright/test'
 import pixelmatch from 'pixelmatch'
 import { PNG } from 'pngjs'
 
-interface IgnoreRectangle {
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
 interface VisualTarget {
   reference: string
   viewport: { width: number; height: number }
-  ignoredContent: readonly IgnoreRectangle[]
 }
 
 const TARGETS: Readonly<Record<string, VisualTarget>> = {
   'figma-desktop': {
     reference: 'desktop-1440x1077.png',
     viewport: { width: 1440, height: 1077 },
-    ignoredContent: [
-      { x: 529, y: 156, width: 52, height: 15 },
-      { x: 795, y: 252, width: 76, height: 42 },
-    ],
   },
   'figma-mobile': {
     reference: 'mobile-390x1252.png',
     viewport: { width: 390, height: 1252 },
-    ignoredContent: [],
   },
-}
-
-function ignoreApprovedContent(
-  actual: PNG,
-  expected: PNG,
-  rectangles: readonly IgnoreRectangle[],
-) {
-  for (const rectangle of rectangles) {
-    for (let y = rectangle.y; y < rectangle.y + rectangle.height; y += 1) {
-      for (let x = rectangle.x; x < rectangle.x + rectangle.width; x += 1) {
-        const offset = (y * expected.width + x) * 4
-        expected.data.copy(actual.data, offset, offset, offset + 4)
-      }
-    }
-  }
 }
 
 test.beforeEach(async ({ page }) => {
@@ -120,13 +92,10 @@ test('matches the immutable Figma reference', async ({ page }, testInfo) => {
     height: expected.height,
   })
 
-  const comparableActual = PNG.sync.read(actualBuffer)
-  ignoreApprovedContent(comparableActual, expected, target.ignoredContent)
-
   const diff = new PNG({ width: expected.width, height: expected.height })
   const mismatchedPixels = pixelmatch(
     expected.data,
-    comparableActual.data,
+    actual.data,
     diff.data,
     expected.width,
     expected.height,

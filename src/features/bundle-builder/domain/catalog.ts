@@ -6,6 +6,7 @@ import type {
   BundleReviewMetadata,
   BundleState,
   BundleStep,
+  CardDisplayPrice,
   ProductId,
   ProductImage,
   ProductSelection,
@@ -91,6 +92,29 @@ function parseImage(value: unknown, path: string): ProductImage {
   }
 }
 
+function parseCardDisplayPrice(
+  value: unknown,
+  path: string,
+): CardDisplayPrice | undefined {
+  if (value === undefined) return undefined
+
+  const source = record(value, path)
+  const priceCents = integer(source.priceCents, `${path}.priceCents`)
+  const compareAtCents =
+    source.compareAtCents === undefined
+      ? undefined
+      : integer(source.compareAtCents, `${path}.compareAtCents`)
+
+  if (compareAtCents !== undefined && compareAtCents < priceCents) {
+    return fail(`${path}.compareAtCents`, 'greater than or equal to priceCents')
+  }
+
+  return {
+    priceCents,
+    ...(compareAtCents === undefined ? {} : { compareAtCents }),
+  }
+}
+
 function parseSelection(value: unknown, path: string): ProductSelection {
   const source = record(value, path)
   const mode = string(source.mode, `${path}.mode`)
@@ -127,6 +151,10 @@ function parseVariant(value: unknown, path: string): ProductVariant {
   if (compareAtCents !== undefined && compareAtCents < priceCents) {
     return fail(`${path}.compareAtCents`, 'greater than or equal to priceCents')
   }
+  const cardDisplayPrice = parseCardDisplayPrice(
+    source.cardDisplayPrice,
+    `${path}.cardDisplayPrice`,
+  )
 
   return {
     sku: string(source.sku, `${path}.sku`),
@@ -134,6 +162,7 @@ function parseVariant(value: unknown, path: string): ProductVariant {
     swatch: string(source.swatch, `${path}.swatch`),
     priceCents,
     ...(compareAtCents === undefined ? {} : { compareAtCents }),
+    ...(cardDisplayPrice === undefined ? {} : { cardDisplayPrice }),
     ...(source.image === undefined
       ? {}
       : { image: parseImage(source.image, `${path}.image`) }),
@@ -219,12 +248,17 @@ function parseProduct(value: unknown, index: number): BundleProduct {
         'greater than or equal to priceCents',
       )
     }
+    const cardDisplayPrice = parseCardDisplayPrice(
+      source.cardDisplayPrice,
+      `${path}.cardDisplayPrice`,
+    )
     const product: SingleProduct = {
       kind,
       ...base,
       sku: string(source.sku, `${path}.sku`),
       priceCents,
       ...(compareAtCents === undefined ? {} : { compareAtCents }),
+      ...(cardDisplayPrice === undefined ? {} : { cardDisplayPrice }),
     }
     return product
   }

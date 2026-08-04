@@ -165,7 +165,7 @@
         "width": 41,
         "height": 41
       },
-      "badge": "Save 17%",
+      "badge": "Save 12%",
       "billingCadence": "one-time",
       "selection": { "mode": "quantity" },
       "variants": [
@@ -180,7 +180,11 @@
             "height": 22
           },
           "priceCents": 2399,
-          "compareAtCents": 2899
+          "compareAtCents": 2899,
+          "cardDisplayPrice": {
+            "priceCents": 3498,
+            "compareAtCents": 3998
+          }
         },
         {
           "sku": "cam-pan-v3-black",
@@ -193,7 +197,11 @@
             "height": 22
           },
           "priceCents": 2399,
-          "compareAtCents": 2899
+          "compareAtCents": 2899,
+          "cardDisplayPrice": {
+            "priceCents": 3498,
+            "compareAtCents": 3998
+          }
         }
       ]
     },

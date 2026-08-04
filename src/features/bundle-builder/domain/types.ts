@@ -14,6 +14,11 @@ export interface ProductImage {
   readonly height: number
 }
 
+export interface CardDisplayPrice {
+  readonly priceCents: MoneyCents
+  readonly compareAtCents?: MoneyCents
+}
+
 export interface QuantitySelection {
   readonly mode: 'quantity'
 }
@@ -39,6 +44,7 @@ export interface ProductVariant {
   readonly swatch: string
   readonly priceCents: MoneyCents
   readonly compareAtCents?: MoneyCents
+  readonly cardDisplayPrice?: CardDisplayPrice
   readonly image?: ProductImage
   readonly selectorImage?: ProductImage
   readonly reviewImage?: ProductImage
@@ -65,6 +71,7 @@ export interface SingleProduct extends ProductBase {
   readonly sku: Sku
   readonly priceCents: MoneyCents
   readonly compareAtCents?: MoneyCents
+  readonly cardDisplayPrice?: CardDisplayPrice
 }
 
 export interface VariantProduct extends ProductBase {

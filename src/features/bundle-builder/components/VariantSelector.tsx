@@ -23,13 +23,13 @@ export function VariantSelector({
 
   return (
     <fieldset
-      className="mt-5 xl:mt-[13px]"
+      className="mt-5 md:mt-[10px] xl:mt-[13px]"
       data-testid={`variant-selector-${productId}`}
     >
-      <legend className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#6f6a75] xl:sr-only">
+      <legend className="mb-2 text-xs font-semibold uppercase tracking-[0.08em] text-[#6f6a75] md:sr-only">
         Color
       </legend>
-      <div className="flex flex-wrap gap-2 xl:gap-[6px]" role="radiogroup">
+      <div className="flex flex-wrap gap-2 lg:gap-px xl:gap-[6px]" role="radiogroup">
         {variants.map((variant) => {
           const isActive = variant.sku === activeSku
           const isVisuallySelected = isActive && isProductSelected
@@ -38,7 +38,7 @@ export function VariantSelector({
             <label
               key={variant.sku}
               className={[
-                'relative inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium text-[#1f1f1f] has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand has-[:focus-visible]:ring-offset-2 xl:h-[26px] xl:min-h-[26px] xl:gap-0 xl:rounded-[2px] xl:border-[0.5px] xl:py-px xl:text-[10px] xl:tracking-[0.6px]',
+                'relative inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium text-[#1f1f1f] has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-brand has-[:focus-visible]:ring-offset-2 lg:h-[26px] lg:min-h-[26px] lg:gap-0 lg:px-px lg:py-px lg:text-[8px] lg:tracking-[0.3px] xl:rounded-[2px] xl:border-[0.5px] xl:text-[10px] xl:tracking-[0.6px]',
                 isVisuallySelected
                   ? 'border-[#0aa288] bg-[#f6fffc] xl:border-[rgba(10,162,136,0.5)] xl:px-[3px]'
                   : 'border-[#cccccc] bg-white xl:border-[rgba(204,204,204,0.5)] xl:px-[5px]',
@@ -56,6 +56,7 @@ export function VariantSelector({
               {variant.imageSrc ? (
                 <span
                   className="size-5 overflow-hidden rounded-full bg-white xl:rounded-[5px]"
+                  data-variant-thumbnail
                   style={{
                     width: variant.imageWidth ?? 22,
                     height: variant.imageHeight ?? 22,

@@ -1,6 +1,6 @@
 # Frontend Bundle Builder
 
-[![CI](https://github.com/JBM-05/frontend-bundle-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/JBM-05/frontend-bundle-builder/actions/workflows/ci.yml)
+[![CI](https://github.com/JBM-05/Test/actions/workflows/ci.yml/badge.svg)](https://github.com/JBM-05/Test/actions/workflows/ci.yml)
 
 A responsive, four-step security-system bundle builder implemented from supplied Figma designs. The client-only React app provides a live order review, per-variant quantities, explicit save-for-later persistence, and accessible keyboard interactions.
 
@@ -23,8 +23,8 @@ A responsive, four-step security-system bundle builder implemented from supplied
 - npm, included with Node.js
 
 ```bash
-git clone https://github.com/JBM-05/frontend-bundle-builder.git
-cd frontend-bundle-builder
+git clone https://github.com/JBM-05/Test.git
+cd Test
 nvm use
 npm ci
 npm run dev
@@ -108,16 +108,16 @@ Hydration accepts only the current schema/catalog versions and known product, va
 
 The supplied Figma palette contains documented contrast exceptions for review category labels, savings copy, and the struck-through comparison total. The axe suite continues to enforce WCAG A/AA rules everywhere else; it does not represent those exact design tokens as AA-compliant.
 
-The automated suite currently includes 24 Vitest unit/integration tests for reducer, selector, persistence, formatting, and React interaction behavior, plus 24 Playwright behavior/accessibility checks across desktop, tablet, mobile, and narrow-mobile viewports. A separate deterministic visual suite compares the production build with immutable Figma exports at 1440x1077 and 390x1252 and requires zero non-antialiasing pixel differences.
+The automated suite currently includes 27 Vitest unit/integration tests for catalog validation, reducer, selector, persistence, formatting, and React interaction behavior, plus 30 Playwright behavior/accessibility checks across desktop, wide-tablet, tablet, mobile, and narrow-mobile viewports. A separate deterministic visual suite compares the production build with immutable Figma exports at 1440x1077 and 390x1252 and requires zero non-antialiasing pixel differences.
 
 Gilroy and TT Norms Pro are commercial fonts and are not redistributed by this repository. Add licensed WOFF2 copies using the filenames documented in `public/assets/fonts/README.md`; `npm run fonts:verify` fails fast until they are present. This keeps the normal behavior suite runnable while preventing an approximate fallback font from being accepted by the exact visual gate.
 
-Coverage gates are enforced at 80% for statements, functions, and lines and 75% for branches. The final verified run reports 83.59% statement coverage and 86.47% line coverage. A production Lighthouse audit scored 90 for Performance and 100 for Accessibility, Best Practices, and SEO; these scores describe that audited environment and are not treated as permanent guarantees.
+Coverage gates are enforced at 80% for statements, functions, and lines and 75% for branches. The latest verified run reports 85.52% statement coverage and 88.48% line coverage. A production Lighthouse audit scored 90 for Performance and 100 for Accessibility, Best Practices, and SEO; these scores describe that audited environment and are not treated as permanent guarantees.
 
 ## Design references
 
 - [Desktop reference - Figma node 68:9663](https://www.figma.com/design/JYf61etQVqeseX7oY5alGz/Frontend-Test-Figma?node-id=68-9663)
 - [Mobile reference - Figma node 74:19845](https://www.figma.com/design/JYf61etQVqeseX7oY5alGz/Frontend-Test-Figma?node-id=74-19845)
-- [Responsive inspiration - Figma node 70:14135](https://www.figma.com/design/JYf61etQVqeseX7oY5alGz/Frontend-Test-Figma?node-id=70-14135)
+- [Tablet reference - Figma node 70:14135](https://www.figma.com/design/JYf61etQVqeseX7oY5alGz/Frontend-Test-Figma?node-id=70-14135)
 
-The desktop and mobile nodes are the page-level fidelity targets. The intermediate node is a component/layout reference rather than a second screenshot expectation at the same viewport. Exact exports, structured layer measurements, design tokens, target-size raster assets, and intrinsic SVG controls from the supplied Figma file drive the implementation. See `e2e/figma-reference/README.md` for the immutable-reference contract and the one narrowly masked catalog-copy discrepancy.
+The desktop and mobile nodes are the page-level pixel-fidelity targets. The tablet node defines the five-card composition used from 1024px through 1279px and remains a component/layout reference rather than a second 1440px screenshot expectation. Exact exports, structured layer measurements, design tokens, target-size raster assets, and intrinsic SVG controls from the supplied Figma file drive the implementation. See `e2e/figma-reference/README.md` for the immutable-reference contract.

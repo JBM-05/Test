@@ -104,3 +104,10 @@ dialog::backdrop {
     transition-duration: 0.01ms !important;
   }
 }
+
+@media (min-width: 64rem) and (max-width: 79.999rem) {
+  [data-variant-thumbnail] {
+    width: 18px !important;
+    height: 18px !important;
+  }
+}

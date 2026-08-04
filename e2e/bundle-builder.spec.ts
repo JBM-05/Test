@@ -58,6 +58,19 @@ test.describe('bundle builder', () => {
     const total = page.getByTestId('bundle-total')
     await expect(total).toContainText('$187.89')
 
+    const camPanCard = page.getByRole('article', {
+      name: 'Wyze Cam Pan v3',
+    })
+    await expect(camPanCard.getByText('Save 12%')).toBeVisible()
+    await expect(camPanCard.getByText('$39.98')).toBeVisible()
+    await expect(camPanCard.getByText('$34.98')).toBeVisible()
+
+    const seededCamPanReviewLine = page.getByRole('article', {
+      name: 'Wyze Cam Pan v3, White',
+    })
+    await expect(seededCamPanReviewLine.getByText('$57.98')).toBeVisible()
+    await expect(seededCamPanReviewLine.getByText('$47.98')).toBeVisible()
+
     const card = getProductCard(page, 'Wyze Cam Floodlight v2')
     await card.getByText('Black', { exact: true }).click()
     await card
@@ -168,6 +181,7 @@ test.describe('bundle builder', () => {
   test('stays within the viewport and keeps phone controls touch-friendly', async ({
     page,
   }, testInfo) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
     await openApp(page)
 
     const dimensions = await page.evaluate<{
@@ -263,6 +277,248 @@ test.describe('bundle builder', () => {
       const contentCenter =
         (duoContentBox?.y ?? 0) + (duoContentBox?.height ?? 0) / 2
       expect(contentCenter).toBeCloseTo(cardCenter, 1)
+    }
+
+    if (viewportWidth === 1024) {
+      const productIds = [
+        'cam-v4',
+        'cam-pan-v3',
+        'floodlight-v2',
+        'duo-cam-doorbell',
+        'battery-cam-pro',
+      ] as const
+      const productGrid = page.getByTestId('product-grid-cameras')
+      const gridBox = await productGrid.boundingBox()
+      const cardBoxes = await Promise.all(
+        productIds.map((productId) =>
+          page.locator(`[data-product-id="${productId}"]`).boundingBox(),
+        ),
+      )
+
+      expect(gridBox).not.toBeNull()
+      expect(cardBoxes.every((box) => box !== null)).toBe(true)
+
+      const firstCardBox = cardBoxes[0]
+      for (const cardBox of cardBoxes) {
+        expect(cardBox?.y).toBeCloseTo(firstCardBox?.y ?? 0, 1)
+        expect(cardBox?.height).toBeCloseTo(firstCardBox?.height ?? 0, 1)
+        expect(
+          (cardBox?.y ?? 0) + (cardBox?.height ?? 0),
+        ).toBeCloseTo(
+          (firstCardBox?.y ?? 0) + (firstCardBox?.height ?? 0),
+          1,
+        )
+        expect(cardBox?.x ?? 0).toBeGreaterThanOrEqual(gridBox?.x ?? 0)
+        expect(
+          (cardBox?.x ?? 0) + (cardBox?.width ?? 0),
+        ).toBeLessThanOrEqual(
+          (gridBox?.x ?? 0) + (gridBox?.width ?? 0),
+        )
+      }
+
+      const duoCard = page.locator('[data-product-id="duo-cam-doorbell"]')
+      await expect(
+        page.getByTestId('variant-selector-duo-cam-doorbell'),
+      ).toHaveCount(0)
+      await expect(
+        page.getByTestId('variant-selector-spacer-duo-cam-doorbell'),
+      ).toHaveCount(0)
+
+      const [
+        duoContentBox,
+        duoTitleBox,
+        duoDescriptionBox,
+        duoQuantityBox,
+        duoControlsBox,
+      ] = await Promise.all([
+        duoCard.getByTestId('product-content-duo-cam-doorbell').boundingBox(),
+        duoCard.locator('#product-title-duo-cam-doorbell').boundingBox(),
+        duoCard
+          .getByTestId('product-description-duo-cam-doorbell')
+          .boundingBox(),
+        duoCard
+          .getByTestId('quantity-duo-cam-doorbell')
+          .locator('xpath=..')
+          .boundingBox(),
+        duoCard.getByTestId('product-controls-duo-cam-doorbell').boundingBox(),
+      ])
+
+      expect(duoContentBox).not.toBeNull()
+      expect(duoTitleBox).not.toBeNull()
+      expect(duoDescriptionBox).not.toBeNull()
+      expect(duoQuantityBox).not.toBeNull()
+      expect(duoControlsBox).not.toBeNull()
+
+      const descriptionToQuantityGap =
+        (duoQuantityBox?.y ?? 0) -
+        ((duoDescriptionBox?.y ?? 0) + (duoDescriptionBox?.height ?? 0))
+      expect(descriptionToQuantityGap).toBeGreaterThanOrEqual(9)
+      expect(descriptionToQuantityGap).toBeLessThanOrEqual(11)
+
+      for (const productId of [
+        'cam-v4',
+        'cam-pan-v3',
+        'floodlight-v2',
+      ] as const) {
+        const card = page.locator(`[data-product-id="${productId}"]`)
+        const [badgeBox, imageFrameBox] = await Promise.all([
+          card.getByTestId(`product-badge-${productId}`).boundingBox(),
+          card.getByTestId(`product-image-frame-${productId}`).boundingBox(),
+        ])
+
+        expect(badgeBox).not.toBeNull()
+        expect(imageFrameBox).not.toBeNull()
+        expect(
+          (imageFrameBox?.y ?? 0) -
+            ((badgeBox?.y ?? 0) + (badgeBox?.height ?? 0)),
+        ).toBeGreaterThanOrEqual(4)
+      }
+
+      for (const productId of productIds) {
+        const card = page.locator(`[data-product-id="${productId}"]`)
+        const cardBox = await card.boundingBox()
+        const controlBoxes = await card
+          .locator('[data-control-surface="default"]')
+          .evaluateAll((surfaces) =>
+            surfaces.map((surface) => {
+              const box = surface.getBoundingClientRect()
+              return { bottom: box.bottom }
+            }),
+          )
+
+        expect(controlBoxes).toHaveLength(2)
+        for (const controlBox of controlBoxes) {
+          expect(controlBox.bottom).toBeLessThanOrEqual(
+            (cardBox?.y ?? 0) + (cardBox?.height ?? 0),
+          )
+        }
+      }
+    }
+
+    if (viewportWidth === 768 || viewportWidth === 1024) {
+      const productIds = [
+        'cam-v4',
+        'cam-pan-v3',
+        'floodlight-v2',
+        'duo-cam-doorbell',
+        'battery-cam-pro',
+      ] as const
+      const expectedTitleOffsets =
+        viewportWidth === 768
+          ? {
+              'cam-v4': 196,
+              'cam-pan-v3': 212,
+              'floodlight-v2': 208,
+              'duo-cam-doorbell': 212,
+              'battery-cam-pro': 172,
+            }
+          : {
+              'cam-v4': 165,
+              'cam-pan-v3': 179,
+              'floodlight-v2': 175,
+              'duo-cam-doorbell': 180,
+              'battery-cam-pro': 136,
+            }
+      const titleToDescriptionGap = viewportWidth === 768 ? 5 : 4
+
+      for (const productId of productIds) {
+        const card = page.locator(`[data-product-id="${productId}"]`)
+        const [
+          cardBox,
+          imageBox,
+          titleBox,
+          descriptionBox,
+          selectorBox,
+          controlsBox,
+          quantityBox,
+        ] = await Promise.all([
+          card.boundingBox(),
+          card.getByTestId(`product-image-frame-${productId}`).boundingBox(),
+          card.locator(`#product-title-${productId}`).boundingBox(),
+          card.getByTestId(`product-description-${productId}`).boundingBox(),
+          productId === 'duo-cam-doorbell'
+            ? Promise.resolve(null)
+            : card.getByTestId(`variant-selector-${productId}`).boundingBox(),
+          card.getByTestId(`product-controls-${productId}`).boundingBox(),
+          card
+            .locator('[role="group"][aria-label$=" quantity"]')
+            .boundingBox(),
+        ])
+
+        expect(cardBox).not.toBeNull()
+        expect(imageBox).not.toBeNull()
+        expect(titleBox).not.toBeNull()
+        expect(descriptionBox).not.toBeNull()
+        expect(controlsBox).not.toBeNull()
+        expect(quantityBox).not.toBeNull()
+
+        expect((titleBox?.y ?? 0) - (cardBox?.y ?? 0)).toBeCloseTo(
+          expectedTitleOffsets[productId],
+          1,
+        )
+        expect(titleBox?.y).toBeCloseTo(
+          (imageBox?.y ?? 0) + (imageBox?.height ?? 0),
+          1,
+        )
+        expect(
+          (descriptionBox?.y ?? 0) -
+            ((titleBox?.y ?? 0) + (titleBox?.height ?? 0)),
+        ).toBeCloseTo(titleToDescriptionGap, 1)
+
+        const precedingBox = selectorBox ?? descriptionBox
+        if (selectorBox !== null) {
+          expect(
+            selectorBox.y -
+              ((descriptionBox?.y ?? 0) + (descriptionBox?.height ?? 0)),
+          ).toBeCloseTo(10, 1)
+        }
+        const precedingToQuantityGap =
+          (quantityBox?.y ?? 0) -
+          ((precedingBox?.y ?? 0) + (precedingBox?.height ?? 0))
+        expect(precedingToQuantityGap).toBeGreaterThanOrEqual(10)
+        expect(precedingToQuantityGap).toBeLessThanOrEqual(18)
+        expect(controlsBox?.y ?? 0).toBeGreaterThanOrEqual(
+          precedingBox?.y ?? 0,
+        )
+        expect(
+          (controlsBox?.y ?? 0) + (controlsBox?.height ?? 0),
+        ).toBeLessThanOrEqual(
+          (cardBox?.y ?? 0) + (cardBox?.height ?? 0),
+        )
+      }
+
+      if (viewportWidth === 1024) {
+        const camV4VariantRows = await page
+          .locator('[data-product-id="cam-v4"] input[type="radio"]')
+          .evaluateAll((inputs) => [
+            ...new Set(
+              inputs.map((input) =>
+                Math.round(
+                  input.closest('label')?.getBoundingClientRect().top ?? 0,
+                ),
+              ),
+            ),
+          ])
+        expect(camV4VariantRows).toHaveLength(1)
+      }
+
+      if (viewportWidth === 768) {
+        for (const [firstProductId, secondProductId] of [
+          ['cam-v4', 'cam-pan-v3'],
+          ['floodlight-v2', 'duo-cam-doorbell'],
+        ] as const) {
+          const [firstCardBox, secondCardBox] = await Promise.all([
+            page.locator(`[data-product-id="${firstProductId}"]`).boundingBox(),
+            page.locator(`[data-product-id="${secondProductId}"]`).boundingBox(),
+          ])
+
+          expect(firstCardBox?.y).toBeCloseTo(secondCardBox?.y ?? 0, 1)
+          expect(firstCardBox?.height).toBeCloseTo(
+            secondCardBox?.height ?? 0,
+            1,
+          )
+        }
+      }
     }
 
     if (viewportWidth !== undefined && viewportWidth <= 390) {
@@ -425,13 +681,20 @@ test.describe('bundle builder', () => {
   test('matches the authoritative seeded visual state', async ({
     page,
   }, testInfo) => {
-    const isDesktop = testInfo.project.name === 'desktop-chromium'
+    const screenshotNameByProject: Readonly<Record<string, string>> = {
+      'desktop-chromium': 'seeded-desktop.png',
+      'tablet-chromium': 'seeded-tablet.png',
+      'tablet-wide-chromium': 'seeded-tablet-wide.png',
+      'mobile-chromium': 'collapsed-mobile.png',
+    }
+    const screenshotName = screenshotNameByProject[testInfo.project.name]
     const isMobile = testInfo.project.name === 'mobile-chromium'
 
     test.skip(
-      !isDesktop && !isMobile,
-      'Visual baselines cover only the authoritative Figma viewport sizes.',
+      screenshotName === undefined,
+      'Visual baselines cover the Figma and tablet alignment viewport sizes.',
     )
+    if (screenshotName === undefined) return
 
     await openStableVisualApp(page)
 
@@ -444,7 +707,7 @@ test.describe('bundle builder', () => {
     await page.evaluate('window.scrollTo(0, 0)')
 
     await expect(page).toHaveScreenshot(
-      isDesktop ? 'seeded-desktop.png' : 'collapsed-mobile.png',
+      screenshotName,
       {
         animations: 'disabled',
         caret: 'hide',

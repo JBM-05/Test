@@ -50,6 +50,23 @@ describe('BundleBuilder', () => {
     expect(screen.getByTestId('quantity-cam-v4-grey')).toHaveTextContent('0')
   })
 
+  it('uses Figma card-only pricing without changing review totals', () => {
+    render(<BundleBuilder />)
+
+    const card = screen.getByRole('article', { name: 'Wyze Cam Pan v3' })
+    expect(within(card).getByText('Save 12%')).toBeVisible()
+    expect(within(card).getByText('$39.98')).toBeVisible()
+    expect(within(card).getByText('$34.98')).toBeVisible()
+
+    const reviewLine = within(screen.getByTestId('review-panel')).getByRole(
+      'article',
+      { name: 'Wyze Cam Pan v3, White' },
+    )
+    expect(within(reviewLine).getByText('$57.98')).toBeVisible()
+    expect(within(reviewLine).getByText('$47.98')).toBeVisible()
+    expect(screen.getByTestId('bundle-total')).toHaveTextContent('$187.89')
+  })
+
   it('renders required and plan items as non-destructive review summaries', () => {
     render(<BundleBuilder />)
 

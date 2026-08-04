@@ -48,9 +48,10 @@ export function BundleBuilder() {
                 onNext={() => builder.advanceFromStep(index)}
               >
                 <div
+                  data-testid={`product-grid-${step.id}`}
                   className={
                     products.length > 1
-                      ? 'grid grid-cols-1 gap-4 md:grid-cols-2 xl:gap-[15px]'
+                      ? 'grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5 lg:gap-[15px] xl:grid-cols-2 xl:gap-[15px]'
                       : 'grid grid-cols-1 gap-4 xl:gap-[15px]'
                   }
                 >
@@ -66,7 +67,7 @@ export function BundleBuilder() {
                         className={[
                           'h-full',
                           centerOddFinalCard
-                            ? 'md:col-span-2 md:mx-auto md:w-[calc(50%-0.5rem)] xl:w-[360px]'
+                            ? 'md:col-span-2 md:mx-auto md:w-[calc(50%-0.5rem)] lg:col-span-1 lg:mx-0 lg:w-full xl:col-span-2 xl:mx-auto xl:w-[360px]'
                             : '',
                         ].join(' ')}
                       >

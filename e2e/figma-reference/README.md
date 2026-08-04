@@ -12,6 +12,4 @@ The first two are the authoritative page-level pixel gates. The overview deliber
 different 1440px composition, so it is a component reference rather than a second page screenshot
 expectation at the same viewport.
 
-The desktop comparator excludes only the known Cam Pan card copy discrepancy: the design shows
-`Save 12%`, `$39.98`, and `$34.98`, while the catalog correctly computes `Save 17%`, `$28.99`, and
-`$23.99`. No surrounding layout or component area is excluded.
+Every pixel in both page-level references is compared. The visual gate has no ignored regions.

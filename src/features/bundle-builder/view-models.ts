@@ -87,24 +87,34 @@ export function toProductCardViewModel(
 ): ProductCardViewModel {
   const variants =
     product.kind === 'variant'
-      ? product.variants.map((variant) => ({
-          sku: variant.sku,
-          label: variant.label,
-          swatch: variant.swatch,
-          imageSrc: variant.selectorImage?.src,
-          imageAlt: variant.selectorImage?.alt,
-          imageWidth: variant.selectorImage?.width,
-          imageHeight: variant.selectorImage?.height,
-          currentCents: variant.priceCents,
-          compareAtCents: variant.compareAtCents,
-          suffix: product.billingCadence === 'month' ? '/mo' : undefined,
-        }))
+      ? product.variants.map((variant) => {
+          const cardPrice = variant.cardDisplayPrice
+          return {
+            sku: variant.sku,
+            label: variant.label,
+            swatch: variant.swatch,
+            imageSrc: variant.selectorImage?.src,
+            imageAlt: variant.selectorImage?.alt,
+            imageWidth: variant.selectorImage?.width,
+            imageHeight: variant.selectorImage?.height,
+            currentCents: cardPrice?.priceCents ?? variant.priceCents,
+            compareAtCents:
+              cardPrice === undefined
+                ? variant.compareAtCents
+                : cardPrice.compareAtCents,
+            suffix: product.billingCadence === 'month' ? '/mo' : undefined,
+          }
+        })
       : [
           {
             sku: product.sku,
             label: product.name,
-            currentCents: product.priceCents,
-            compareAtCents: product.compareAtCents,
+            currentCents:
+              product.cardDisplayPrice?.priceCents ?? product.priceCents,
+            compareAtCents:
+              product.cardDisplayPrice === undefined
+                ? product.compareAtCents
+                : product.cardDisplayPrice.compareAtCents,
             suffix: product.billingCadence === 'month' ? '/mo' : undefined,
           },
         ]

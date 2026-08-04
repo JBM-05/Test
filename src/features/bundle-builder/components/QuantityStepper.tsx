@@ -47,8 +47,8 @@ function QuantityButton({
     <button
       type="button"
       className={[
-        'absolute top-[-8px] z-10 flex size-11 items-center justify-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 disabled:cursor-not-allowed xl:top-0 xl:size-7',
-        isMinus ? 'left-[-12px] xl:left-[-4px]' : 'right-[-12px] xl:right-[-4px]',
+        'absolute top-[-8px] z-10 flex size-11 items-center justify-center rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-1 disabled:cursor-not-allowed lg:top-0 lg:size-7',
+        isMinus ? 'left-[-12px] lg:left-[-4px]' : 'right-[-12px] lg:right-[-4px]',
       ].join(' ')}
       onClick={onClick}
       disabled={disabled}
