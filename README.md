@@ -1,8 +1,21 @@
 # Frontend Bundle Builder
 
-An interview take-home implementation of a responsive, four-step security-system bundle builder. The app is a client-only React prototype with a live order review, per-variant quantities, explicit save-for-later persistence, and accessible keyboard interactions.
+[![CI](https://github.com/JBM-05/frontend-bundle-builder/actions/workflows/ci.yml/badge.svg)](https://github.com/JBM-05/frontend-bundle-builder/actions/workflows/ci.yml)
 
-## Run from a clean clone
+A responsive, four-step security-system bundle builder implemented from supplied Figma designs. The client-only React app provides a live order review, per-variant quantities, explicit save-for-later persistence, and accessible keyboard interactions.
+
+![Desktop bundle-builder interface](e2e/__screenshots__/seeded-desktop.png)
+
+## Highlights
+
+- Configure cameras, a monitoring plan, sensors, and accessories through a guided accordion flow.
+- Keep quantities independent for every product variant while updating prices and savings immediately.
+- Enforce catalog rules, including the required Sense Hub when motion sensors are selected.
+- Save and restore a validated, versioned bundle snapshot from local storage.
+- Use the complete flow with a keyboard, reduced motion, responsive layouts, and accessible dialogs.
+- Verify behavior with Vitest and Playwright and visual fidelity against immutable Figma exports.
+
+## Quick start
 
 ### Prerequisites
 
@@ -23,6 +36,8 @@ Vite prints the local development URL after startup. To exercise the production 
 npm run build
 npm run preview
 ```
+
+The normal development and behavior-test flows use the bundled Poppins fallback. Exact visual comparisons additionally require the licensed Gilroy and TT Norms Pro files described in [`public/assets/fonts/README.md`](public/assets/fonts/README.md).
 
 ## Commands
 
@@ -47,6 +62,23 @@ Install Playwright's Chromium binary before the first local browser run:
 ```bash
 npx playwright install chromium
 npm run e2e:behavior
+```
+
+## Project structure
+
+```text
+src/
+  features/bundle-builder/
+    components/       Presentational React components
+    data/             Versioned bundle catalog and seed configuration
+    domain/           State transitions, invariants, types, and selectors
+    formatting/       Display-only currency formatting
+    hooks/            UI orchestration and reducer integration
+    persistence/      Snapshot validation and local-storage adapter
+    view-models.ts    Domain-to-presentation mapping
+e2e/
+  figma-reference/    Immutable design exports and their manifest
+scripts/              Asset, font, and reference verification
 ```
 
 ## Product and architecture decisions
